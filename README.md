@@ -11,9 +11,9 @@ This project is intentionally separate from
 
 ## Status
 
-Phase 1 compatibility verification and catalog/tool foundations are complete.
-The customer-facing route, prompt, tool loop, and confirmation state are
-deliberately deferred to later phases.
+Phase 2 is complete: direct audio orchestration, real OpenAI tool calls, and
+server-side order confirmation enforcement are implemented. The customer-facing
+frontend remains deferred to Phase 3.
 
 ## Requirements
 

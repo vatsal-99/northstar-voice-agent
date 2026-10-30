@@ -41,6 +41,56 @@
   {
     "type": "function",
     "function": {
+      "name": "request_order_confirmation",
+      "description": "Record a server-validated pending order before asking the customer to confirm it.",
+      "parameters": {
+        "type": "object",
+        "properties": {
+          "productId": {
+            "type": "string",
+            "description": "The catalog product ID."
+          },
+          "quantity": {
+            "type": "integer",
+            "minimum": 1,
+            "description": "The number of units to order."
+          }
+        },
+        "required": ["productId", "quantity"],
+        "additionalProperties": false
+      }
+    }
+  },
+  {
+    "type": "function",
+    "function": {
+      "name": "confirm_order",
+      "description": "Record explicit customer agreement to the exact pending product, quantity, and total price.",
+      "parameters": {
+        "type": "object",
+        "properties": {
+          "productId": {
+            "type": "string",
+            "description": "The pending catalog product ID."
+          },
+          "quantity": {
+            "type": "integer",
+            "minimum": 1,
+            "description": "The pending order quantity."
+          },
+          "totalPrice": {
+            "type": "number",
+            "description": "The exact pending order total in USD."
+          }
+        },
+        "required": ["productId", "quantity", "totalPrice"],
+        "additionalProperties": false
+      }
+    }
+  },
+  {
+    "type": "function",
+    "function": {
       "name": "place_order",
       "description": "Place an order for an in-stock product after the application has confirmed the product, quantity, and price with the customer.",
       "parameters": {
