@@ -10,7 +10,7 @@ was not used as the backend and no files in it are modified.
 
 ## Current status
 
-Phases 0–5 implementation work is complete. The repository contains the
+Phases 0–10 implementation work is complete. The repository contains the
 foundation, verified direct audio/function-calling integration, tools, backend
 confirmation enforcement, responsive voice interface, Northstar storefront,
 catalog-backed product detail pages, real product photography, samples, tests,
@@ -53,16 +53,17 @@ npm run dev
 
 Open <http://localhost:3000>.
 
-The storefront homepage displays the six products from
-[tools/catalog.json](./tools/catalog.json). Select **See full details** on any
-product for its dedicated product page. The floating **Talk to us** button
+The storefront homepage displays four featured products from
+[tools/catalog.json](./tools/catalog.json). Select **View all products** or
+the **Products** navigation link to browse all twelve products. Select **See
+full details** on any product for its dedicated product page. The floating
+**Talk to us** button
 opens the existing voice agent in a popup; the full-page voice experience is
 also available at <http://localhost:3000/voice>.
 
-Choose an MP3/WAV file or use **Record** when the browser supports MP3/WAV
-recording. Some browsers expose only WebM recording; the interface reports
-that limitation and asks for an MP3/WAV upload because the server intentionally
-accepts only the formats required by the assessment.
+Choose an MP3/WAV file or use **Record**. Browsers that record WebM internally
+are converted client-side into a WAV file before upload, so the server still
+receives only the formats required by the assessment.
 
 Each browser session receives a session ID stored in `sessionStorage`. The
 server uses that ID to preserve the tool conversation and pending order
@@ -114,6 +115,7 @@ See [samples/expected-behavior.md](./samples/expected-behavior.md):
 
 ```powershell
 npm run test:tools
+npm run test:orders
 npm run test:phase-2
 npm run test:phase-4
 npm run lint
@@ -121,8 +123,9 @@ npx tsc --noEmit
 npm run build
 ```
 
-The tests cover catalog tools, order confirmation, unsupported/empty audio,
-missing sessions, invalid arguments, out-of-stock products, and unknown tools.
+The tests cover catalog tools, shared in-memory order creation and tracking,
+unique order numbers, order confirmation, unsupported/empty audio, missing
+sessions, invalid arguments, out-of-stock products, and unknown tools.
 The live OpenAI audio/tool compatibility result is recorded in
 [PHASE-1-COMPATIBILITY.md](./PHASE-1-COMPATIBILITY.md).
 
@@ -133,3 +136,12 @@ The live OpenAI audio/tool compatibility result is recorded in
 - [PLAN.md](./PLAN.md): approval-gated phases and Definitions of Done
 - [PROCESS_REPORT.md](./PROCESS_REPORT.md): process reflection and manual work
 - [ai-chats/](./ai-chats/): native raw coding-assistant exports
+
+Orders are intentionally stored in memory only. Newly created orders can be
+tracked while the current application process is running; restarting the
+server clears those orders.
+
+The storefront's **Buy now** action opens the order flow and then the voice
+agent performs the required confirmation before calling `place_order`. It does
+not collect payment or create a live retail order. The floating voice-agent
+launcher is mounted in the root layout and is available on every page.

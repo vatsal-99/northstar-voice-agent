@@ -64,5 +64,71 @@
     "stockStatus": "in_stock",
     "deliveryEstimate": "2-4 business days",
     "imageUrl": "https://images.unsplash.com/photo-1544816155-12df9643f363?auto=format&fit=crop&w=1200&q=85"
+  },
+  {
+    "id": "terra-tote",
+    "name": "Terra Canvas Tote",
+    "description": "A durable everyday tote with an inner pocket and reinforced handles.",
+    "category": "Accessories",
+    "price": 32,
+    "currency": "USD",
+    "stockStatus": "in_stock",
+    "deliveryEstimate": "3-5 business days",
+    "imageUrl": "https://images.unsplash.com/photo-1544816155-12df9643f363?auto=format&fit=crop&w=1200&q=85"
+  },
+  {
+    "id": "ember-pour-over",
+    "name": "Ember Pour-Over Set",
+    "description": "A ceramic dripper and carafe set for a calm, balanced morning brew.",
+    "category": "Kitchen",
+    "price": 48,
+    "currency": "USD",
+    "stockStatus": "in_stock",
+    "deliveryEstimate": "3-5 business days",
+    "imageUrl": "https://images.unsplash.com/photo-1495474472287-4d71bcdd2085?auto=format&fit=crop&w=1200&q=85"
+  },
+  {
+    "id": "orbit-wireless-charger",
+    "name": "Orbit Wireless Charger",
+    "description": "A compact fast wireless charger with a soft-touch finish for your desk.",
+    "category": "Tech",
+    "price": 29,
+    "currency": "USD",
+    "stockStatus": "in_stock",
+    "deliveryEstimate": "2-4 business days",
+    "imageUrl": "https://images.unsplash.com/photo-1586953208448-b95a79798f07?auto=format&fit=crop&w=1200&q=85"
+  },
+  {
+    "id": "linen-eye-mask",
+    "name": "Linen Sleep Mask",
+    "description": "A breathable linen eye mask with a soft elastic band for restful nights.",
+    "category": "Wellness",
+    "price": 16,
+    "currency": "USD",
+    "stockStatus": "in_stock",
+    "deliveryEstimate": "3-5 business days",
+    "imageUrl": "https://images.unsplash.com/photo-1511295742362-92c96b1cf484?auto=format&fit=crop&w=1200&q=85"
+  },
+  {
+    "id": "cedar-desk-organizer",
+    "name": "Cedar Desk Organizer",
+    "description": "A solid cedar tray for keeping pens, keys, and small essentials in place.",
+    "category": "Home Office",
+    "price": 36,
+    "currency": "USD",
+    "stockStatus": "in_stock",
+    "deliveryEstimate": "4-6 business days",
+    "imageUrl": "https://images.unsplash.com/photo-1497215728101-856f4ea42174?auto=format&fit=crop&w=1200&q=85"
+  },
+  {
+    "id": "meadow-hand-cream",
+    "name": "Meadow Hand Cream",
+    "description": "A rich botanical hand cream with shea butter and a light citrus scent.",
+    "category": "Wellness",
+    "price": 22,
+    "currency": "USD",
+    "stockStatus": "in_stock",
+    "deliveryEstimate": "2-4 business days",
+    "imageUrl": "https://images.unsplash.com/photo-1556228578-8c89e6adf883?auto=format&fit=crop&w=1200&q=85"
   }
 ]

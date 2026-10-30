@@ -1,5 +1,6 @@
 import assert from "node:assert/strict";
 import { executeTool, resetAgentSession } from "../src/lib/agent";
+import { getOrderStatus } from "../tools/get-order-status";
 
 const sessionId = "phase-2-test-session";
 resetAgentSession(sessionId);
@@ -39,11 +40,29 @@ const placed = executeTool(
 );
 assert.equal(placed.ok, true);
 
-const cannotPlaceAgain = executeTool(
-  sessionId,
-  "place_order",
-  JSON.stringify({ productId: "aurora-mug", quantity: 2 }),
-);
-assert.equal(cannotPlaceAgain.ok, false);
+if (placed.ok) {
+  const orderNumber = (placed.data as { orderNumber: string }).orderNumber;
+  const tracked = getOrderStatus({ orderNumber });
+  assert.equal(tracked.ok, true);
+  if (tracked.ok) {
+    const stored = tracked.data as {
+      product: string;
+      quantity: number;
+      totalPrice: number;
+      status: string;
+    };
+    assert.equal(stored.product, "Aurora Ceramic Mug");
+    assert.equal(stored.quantity, 2);
+    assert.equal(stored.totalPrice, 37);
+    assert.equal(stored.status, "processing");
+  }
+
+  const cannotPlaceAgain = executeTool(
+    sessionId,
+    "place_order",
+    JSON.stringify({ productId: "aurora-mug", quantity: 2 }),
+  );
+  assert.equal(cannotPlaceAgain.ok, false);
+}
 
 console.log("Phase 2 confirmation tests passed.");

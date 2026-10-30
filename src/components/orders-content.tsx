@@ -22,7 +22,7 @@ export default function OrdersContent() {
           <span>Northstar <em>Goods</em></span>
         </Link>
         <div className={styles.navLinks}>
-          <Link href="/#shop">Products</Link>
+          <Link href="/products">Products</Link>
           <Link className={styles.activeLink} href="/orders">Orders</Link>
           <Link href="/voice">Voice help</Link>
         </div>
@@ -33,7 +33,7 @@ export default function OrdersContent() {
         <h1 id="orders-title">{selectedProduct ? "Ready when you are." : "Your orders."}</h1>
         {selectedProduct ? (
           <>
-            <p className={styles.intro}>Review your selected product before continuing with this demo order request.</p>
+            <p className={styles.intro}>Review your selected product before starting the secure order flow.</p>
             <article className={styles.orderCard}>
               <Image src={selectedProduct.imageUrl} alt={selectedProduct.name} width={220} height={220} />
               <div>
@@ -44,10 +44,10 @@ export default function OrdersContent() {
               </div>
             </article>
             <div className={styles.actions}>
-              <Link className={styles.primaryButton} href="/voice">Continue with order assistance <span aria-hidden="true">→</span></Link>
+              <Link className={styles.primaryButton} href="/voice">Open voice agent <span aria-hidden="true">→</span></Link>
               <Link className={styles.secondaryButton} href="/#shop">Back to products</Link>
             </div>
-            <p className={styles.note}>No payment is collected. The voice agent handles the assessment order-confirmation flow before an order can be placed.</p>
+            <p className={styles.note}>No payment is collected. The voice agent must confirm the product, quantity, and total before an assessment order can be placed.</p>
           </>
         ) : (
           <>

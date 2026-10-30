@@ -8,6 +8,7 @@
     "start": "next start",
     "lint": "eslint",
     "test:tools": "npx --yes tsx tools/tool-tests.mts",
+    "test:orders": "npx --yes tsx tests/order-store-tests.mts",
     "test:phase-2": "npx --yes tsx tests/phase-2-tests.mts",
     "test:phase-4": "npx --yes tsx tests/phase-4-tests.mts"
   },

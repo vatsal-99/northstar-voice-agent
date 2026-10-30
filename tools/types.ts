@@ -30,6 +30,20 @@ export type OrderStatusArgs = {
   orderNumber: string;
 };
 
+export type StoredOrder = {
+  orderNumber: string;
+  productId: string;
+  product: string;
+  quantity: number;
+  unitPrice: number;
+  totalPrice: number;
+  currency: string;
+  status: "processing" | "shipped";
+  estimatedDelivery: string;
+  sessionId: string;
+  createdAt: string;
+};
+
 export type ToolResult =
   | {
       ok: true;

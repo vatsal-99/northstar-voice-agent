@@ -4,7 +4,6 @@ import { useState } from "react";
 import Link from "next/link";
 import Image from "next/image";
 import type { Product } from "../../tools/types";
-import VoiceAgentWidget from "./voice-agent-widget";
 import styles from "./storefront.module.css";
 
 type StorefrontProps = {
@@ -29,7 +28,7 @@ export default function Storefront({ products }: StorefrontProps) {
           <span>Northstar <em>Goods</em></span>
         </Link>
         <div className={styles.navLinks}>
-          <a href="#shop">Products</a>
+          <Link href="/products">Products</Link>
           <a href="/orders">Orders</a>
           <a className={styles.navAgentLink} href="/voice"><span aria-hidden="true">◉</span> Voice help</a>
         </div>
@@ -65,10 +64,10 @@ export default function Storefront({ products }: StorefrontProps) {
             <p className={styles.kicker}>The collection</p>
             <h2 id="collection-title">Small upgrades, <em>big difference.</em></h2>
           </div>
-          <p className={styles.sectionNote}>Six considered essentials<br />for your daily rhythm.</p>
+          <p className={styles.sectionNote}>Four featured essentials<br />from our full collection.</p>
         </div>
         <div className={styles.productGrid}>
-          {products.map((product) => {
+          {products.slice(0, 4).map((product) => {
             return (
               <article className={styles.productCard} key={product.id}>
                 <button
@@ -96,6 +95,11 @@ export default function Storefront({ products }: StorefrontProps) {
             );
           })}
         </div>
+        <div className={styles.collectionFooter}>
+          <Link className={styles.primaryButton} href="/products">
+            View all {products.length} products <span aria-hidden="true">→</span>
+          </Link>
+        </div>
       </section>
 
       <section className={styles.voiceBanner} id="story" aria-labelledby="voice-title">
@@ -118,8 +122,6 @@ export default function Storefront({ products }: StorefrontProps) {
         <p>Made for the everyday.</p>
         <span>© Northstar Goods</span>
       </footer>
-
-      <VoiceAgentWidget />
 
       {selectedProduct && (
         <div className={styles.modalBackdrop} role="presentation" onClick={() => setSelectedProduct(null)}>
@@ -145,7 +147,13 @@ export default function Storefront({ products }: StorefrontProps) {
                 </span>
               </div>
               <p className={styles.delivery}>Estimated delivery: {selectedProduct.deliveryEstimate}</p>
-              <a className={styles.primaryButton} href="/voice">Ask about this product <span aria-hidden="true">→</span></a>
+              {selectedProduct.stockStatus === "in_stock" ? (
+                <a className={styles.primaryButton} href={`/orders?productId=${selectedProduct.id}`}>
+                  Buy now <span aria-hidden="true">→</span>
+                </a>
+              ) : (
+                <span className={styles.primaryButton}>Currently unavailable</span>
+              )}
             </div>
           </section>
         </div>

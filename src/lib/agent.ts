@@ -67,9 +67,15 @@ export async function runVoiceAgent(
       throw new Error("OpenAI returned no assistant message.");
     }
 
-    messages.push(message);
+    messages.push({
+      role: "assistant",
+      content: message.tool_calls?.length
+        ? message.content
+        : message.content ?? message.audio?.transcript ?? null,
+      ...(message.tool_calls ? { tool_calls: message.tool_calls } : {}),
+    });
     if (!message.tool_calls?.length) {
-      const response = message.content?.trim();
+      const response = (message.content ?? message.audio?.transcript)?.trim();
       if (!response) {
         throw new Error("OpenAI returned no text response.");
       }
@@ -141,7 +147,7 @@ export function executeTool(
           quantity: requireInteger(args, "quantity"),
         };
         result = confirmations.canPlace(sessionId, placeOrderArgs)
-          ? placeOrder(placeOrderArgs)
+          ? placeOrder(placeOrderArgs, sessionId)
           : {
               ok: false,
               error:

@@ -1,10 +1,12 @@
 import { findProduct } from "./catalog";
 import { logToolCall } from "./logger";
+import { createOrder } from "./order-store";
 import type { PlaceOrderArgs, ToolResult } from "./types";
 
-let nextOrderNumber = 10482;
-
-export function placeOrder(args: PlaceOrderArgs): ToolResult {
+export function placeOrder(
+  args: PlaceOrderArgs,
+  sessionId = "direct-tool",
+): ToolResult {
   const product = findProduct(args.productId);
   let result: ToolResult;
 
@@ -18,19 +20,9 @@ export function placeOrder(args: PlaceOrderArgs): ToolResult {
       error: `${product.name} is currently out of stock.`,
     };
   } else {
-    const orderNumber = String(nextOrderNumber++);
     result = {
       ok: true,
-      data: {
-        orderNumber,
-        product: product.name,
-        quantity: args.quantity,
-        unitPrice: product.price,
-        totalPrice: Number((product.price * args.quantity).toFixed(2)),
-        currency: product.currency,
-        status: "processing",
-        estimatedDelivery: product.deliveryEstimate,
-      },
+      data: createOrder(product, args.quantity, sessionId),
     };
   }
 

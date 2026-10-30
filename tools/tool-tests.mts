@@ -7,7 +7,7 @@ import { placeOrder } from "./place-order";
 const allProducts = listProducts();
 assert.equal(allProducts.ok, true);
 if (allProducts.ok) {
-  assert.equal(JSON.stringify(allProducts.data).includes('"count":6'), true);
+  assert.equal(JSON.stringify(allProducts.data).includes('"count":12'), true);
 }
 
 const mug = getProductDetails({ productId: "aurora-mug" });

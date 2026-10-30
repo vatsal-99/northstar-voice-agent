@@ -174,3 +174,143 @@ Complete.
 - Out-of-stock products cannot be started through Buy now.
 - Existing voice functionality, API behavior, and backend confirmation rules
   remain intact.
+
+## Phase 7 — Browser recording compatibility
+
+### Status
+
+Complete.
+
+### Tasks completed
+
+- Updated the Record control to use any compatible browser `MediaRecorder`
+  format, including WebM/Opus.
+- Added client-side audio decoding and PCM WAV encoding after recording.
+- Kept `/api/voice` restricted to the existing MP3/WAV input contract.
+- Updated setup documentation to explain the conversion behavior.
+
+### Definition of Done
+
+- Browsers that expose only WebM recording can produce a selectable WAV file.
+- The recorded WAV follows the same upload path as an uploaded WAV file.
+- No transcription service or new runtime dependency is introduced.
+- Lint, TypeScript checks, and production build pass.
+
+## Phase 8 — Audio response compatibility fix
+
+### Status
+
+Complete.
+
+### Tasks completed
+
+- Investigated the generic voice request failure using server logs and a known
+  WAV sample.
+- Confirmed OpenAI returned a successful audio response whose transcript was
+  present in `message.audio.transcript`, while `message.content` was null.
+- Updated the agent response extraction to accept either text content or the
+  official audio transcript field.
+- Preserved the existing direct-audio input, tool loop, and frontend response
+  contract.
+
+### Definition of Done
+
+- Audio responses with a transcript are returned to the browser instead of
+  being reported as a false 502.
+- Tool-call responses continue through the existing loop.
+
+## Phase 11 — Shared in-memory order storage
+
+### Status
+
+Complete.
+
+### Tasks completed
+
+- Added one process-local order store backed by a `Map` keyed by order number.
+- Updated `place_order` to persist complete validated orders with session IDs.
+- Updated `get_order_status` to read newly created orders and the seeded order
+  `10481` from the same store.
+- Preserved server-side confirmation, stock validation, and confirmation
+  clearing to prevent reuse of a confirmed request.
+- Added tests for placement-to-tracking, order fields, unique numbers,
+  unknown orders, and confirmation protections.
+- Documented the process-lifetime limitation of in-memory order storage.
+
+### Definition of Done
+
+- A successfully placed order can be retrieved by its generated order number
+  in the same running process.
+- Restarting the process honestly clears newly created orders; no database or
+  external storage service is introduced.
+- Tests, lint, TypeScript checks, and production build pass.
+
+## Phase 12 — Global voice agent and storefront order CTA cleanup
+
+### Status
+
+Complete.
+
+### Tasks completed
+
+- Removed the misleading product-specific voice enquiry CTA from the product
+  details modal.
+- Renamed the order page action to clearly open the voice agent rather than
+  implying that a payment or manual retail order is completed there.
+- Mounted the floating voice-agent widget in the root layout so it is available
+  on the storefront, product details, orders, voice, and not-found pages.
+- Removed the duplicate storefront-only widget instance.
+- Documented that the assessment order flow requires voice-agent confirmation
+  and does not process payment.
+
+### Definition of Done
+
+- No product-specific “Ask about this product” or order-assistance CTA remains.
+- The voice-agent launcher is rendered globally without duplicate launchers.
+- Existing order validation, confirmation, storage, and voice functionality
+  remain unchanged.
+- The known WAV sample completes successfully when valid OpenAI credentials
+  and model access are available.
+
+## Phase 9 — Multi-turn audio conversation fix
+
+### Status
+
+Complete.
+
+### Tasks completed
+
+- Investigated a repeated-request failure using the running server logs.
+- Found that generated assistant audio bytes were being retained in the
+  in-memory conversation and replayed as `messages[*].audio.data`.
+- Sanitized stored assistant messages to retain only role, text content,
+  transcript fallback, and tool calls.
+- Prevented generated audio payloads from being sent back to OpenAI on later
+  turns.
+
+### Definition of Done
+
+- A second request in the same browser session does not replay generated
+  audio bytes.
+- Multi-turn tool and confirmation conversations retain their tool calls.
+- Direct audio input and final response behavior remain unchanged.
+
+## Phase 10 — Raw Copilot conversation export
+
+### Status
+
+Complete.
+
+### Tasks completed
+
+- Exported the native Copilot session event log into `ai-chats/`.
+- Preserved chronological JSONL events, including user messages, assistant
+  messages, tool calls, permissions, and file changes.
+- Replaced API-key values only with `[REDACTED]`.
+- Validated all 4,012 exported lines as valid JSON.
+
+### Definition of Done
+
+- A native-format raw export is present in `ai-chats/`.
+- The export is not replaced by a summary.
+- No API-key value remains in the committed export.

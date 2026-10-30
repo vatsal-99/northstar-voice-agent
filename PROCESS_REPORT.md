@@ -82,3 +82,12 @@ The current in-memory session state is intentionally assessment-sized. A
 production service would need authenticated, durable, bounded session storage,
 rate limiting, retention controls, and observability.
 
+## 7. Raw coding-assistant export
+
+The native Copilot session event export is stored in
+[`ai-chats/2026-10-30-voice-agent-session.events.jsonl`](./ai-chats/2026-10-30-voice-agent-session.events.jsonl).
+It contains 4,012 valid JSONL events, including user messages, assistant
+messages, tool requests and completions, permissions, and recorded file
+changes. API-key values in the source event log were replaced with
+`[REDACTED]` before adding the export to the repository. No summary was used
+as a substitute for the native event structure.

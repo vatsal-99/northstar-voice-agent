@@ -12,6 +12,49 @@ type Message = {
 const SESSION_STORAGE_KEY = "voice-agent-session-id";
 const acceptedAudioTypes = ["audio/mpeg", "audio/mp3", "audio/wav", "audio/x-wav"];
 
+function audioBufferToWav(audioBuffer: AudioBuffer): Blob {
+  const channelCount = audioBuffer.numberOfChannels;
+  const frameCount = audioBuffer.length;
+  const bytesPerSample = 2;
+  const blockAlign = channelCount * bytesPerSample;
+  const buffer = new ArrayBuffer(44 + frameCount * blockAlign);
+  const view = new DataView(buffer);
+
+  writeString(view, 0, "RIFF");
+  view.setUint32(4, 36 + frameCount * blockAlign, true);
+  writeString(view, 8, "WAVE");
+  writeString(view, 12, "fmt ");
+  view.setUint32(16, 16, true);
+  view.setUint16(20, 1, true);
+  view.setUint16(22, channelCount, true);
+  view.setUint32(24, audioBuffer.sampleRate, true);
+  view.setUint32(28, audioBuffer.sampleRate * blockAlign, true);
+  view.setUint16(32, blockAlign, true);
+  view.setUint16(34, 16, true);
+  writeString(view, 36, "data");
+  view.setUint32(40, frameCount * blockAlign, true);
+
+  const channels = Array.from({ length: channelCount }, (_, index) =>
+    audioBuffer.getChannelData(index),
+  );
+  let offset = 44;
+  for (let frame = 0; frame < frameCount; frame += 1) {
+    for (let channel = 0; channel < channelCount; channel += 1) {
+      const sample = Math.max(-1, Math.min(1, channels[channel][frame]));
+      view.setInt16(offset, sample < 0 ? sample * 0x8000 : sample * 0x7fff, true);
+      offset += bytesPerSample;
+    }
+  }
+
+  return new Blob([buffer], { type: "audio/wav" });
+}
+
+function writeString(view: DataView, offset: number, value: string) {
+  for (let index = 0; index < value.length; index += 1) {
+    view.setUint8(offset + index, value.charCodeAt(index));
+  }
+}
+
 function getSessionId(): string {
   const existing = window.sessionStorage.getItem(SESSION_STORAGE_KEY);
   if (existing) return existing;
@@ -110,12 +153,12 @@ export default function VoiceAgent({ compact = false }: VoiceAgentProps) {
       return;
     }
 
-    const mimeType = ["audio/wav", "audio/mpeg"].find((type) =>
+    const mimeType = ["audio/webm;codecs=opus", "audio/webm", "audio/mp4", "audio/wav", "audio/mpeg"].find((type) =>
       MediaRecorder.isTypeSupported(type),
     );
     if (!mimeType) {
       setRecordingNotice(
-        "This browser records WebM audio, which the assessment API does not accept. Upload an MP3 or WAV file instead.",
+        "This browser does not support a compatible recording format. Upload an MP3 or WAV file instead.",
       );
       return;
     }
@@ -127,11 +170,22 @@ export default function VoiceAgent({ compact = false }: VoiceAgentProps) {
       recorder.ondataavailable = (event) => {
         if (event.data.size > 0) recordingChunks.current.push(event.data);
       };
-      recorder.onstop = () => {
-        const extension = mimeType === "audio/mpeg" ? "mp3" : "wav";
-        const blob = new Blob(recordingChunks.current, { type: mimeType });
-        setSelectedFile(new File([blob], `recording-${Date.now()}.${extension}`, { type: mimeType }));
-        stream.getTracks().forEach((track) => track.stop());
+      recorder.onstop = async () => {
+        try {
+          setRecordingNotice("Preparing your recording...");
+          const recordedBlob = new Blob(recordingChunks.current, { type: mimeType });
+          const audioContext = new AudioContext();
+          const audioBuffer = await audioContext.decodeAudioData(await recordedBlob.arrayBuffer());
+          const wavBlob = audioBufferToWav(audioBuffer);
+          await audioContext.close();
+          setSelectedFile(new File([wavBlob], `recording-${Date.now()}.wav`, { type: "audio/wav" }));
+          setRecordingNotice("");
+        } catch {
+          setError("The recording could not be converted to WAV. Please try again or upload an MP3/WAV file.");
+          setRecordingNotice("");
+        } finally {
+          stream.getTracks().forEach((track) => track.stop());
+        }
       };
       recorder.start();
       mediaRecorder.current = recorder;

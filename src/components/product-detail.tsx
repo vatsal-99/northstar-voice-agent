@@ -25,14 +25,14 @@ export default function ProductDetail({ product }: ProductDetailProps) {
           <span>Northstar <em>Goods</em></span>
         </Link>
         <div className={styles.navLinks}>
-          <Link href="/#shop">Products</Link>
+          <Link href="/products">Products</Link>
           <Link href="/orders">Orders</Link>
           <Link href="/voice">Voice help</Link>
         </div>
       </nav>
 
       <div className={styles.breadcrumbs}>
-        <Link href="/">Home</Link><span>/</span><Link href="/#shop">Collection</Link><span>/</span><span>{product.name}</span>
+        <Link href="/">Home</Link><span>/</span><Link href="/products">Collection</Link><span>/</span><span>{product.name}</span>
       </div>
 
       <section className={styles.productLayout} aria-labelledby="product-title">
