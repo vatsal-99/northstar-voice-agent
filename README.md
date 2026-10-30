@@ -10,10 +10,11 @@ was not used as the backend and no files in it are modified.
 
 ## Current status
 
-Phases 0–4 implementation work is complete. The repository contains the
+Phases 0–5 implementation work is complete. The repository contains the
 foundation, verified direct audio/function-calling integration, tools, backend
-confirmation enforcement, responsive interface, samples, tests, and process
-documentation.
+confirmation enforcement, responsive voice interface, Northstar storefront,
+catalog-backed product detail pages, real product photography, samples, tests,
+and process documentation.
 
 The final assessment demo video and raw AI session exports must be supplied
 from the coding-assistant environment used for the assessment. See
@@ -51,6 +52,12 @@ npm run dev
 ```
 
 Open <http://localhost:3000>.
+
+The storefront homepage displays the six products from
+[tools/catalog.json](./tools/catalog.json). Select **See full details** on any
+product for its dedicated product page. The floating **Talk to us** button
+opens the existing voice agent in a popup; the full-page voice experience is
+also available at <http://localhost:3000/voice>.
 
 Choose an MP3/WAV file or use **Record** when the browser supports MP3/WAV
 recording. Some browsers expose only WebM recording; the interface reports

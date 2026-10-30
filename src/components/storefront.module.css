@@ -95,14 +95,10 @@
 .sectionNote { color: var(--muted); font-size: 0.75rem; line-height: 1.6; text-align: right; }
 .productGrid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 34px 20px; }
 .productCard { min-width: 0; }
-.productVisual { position: relative; width: 100%; aspect-ratio: 1.08; display: flex; align-items: center; justify-content: center; overflow: hidden; border: 0; cursor: pointer; color: var(--ink); }
-.productVisual::before { content: ""; position: absolute; width: 57%; height: 57%; border: 1px solid rgba(28, 41, 39, 0.2); border-radius: 50%; }
-.terracotta { background: #e5b89b; }
-.ocean { background: #b7cfca; }
-.gold { background: #e5d39e; }
-.sage { background: #becdb6; }
-.plum { background: #cbb8c7; }
-.visualIcon { position: relative; z-index: 1; font-family: Georgia, "Times New Roman", serif; font-size: clamp(3rem, 6vw, 5.5rem); font-style: italic; }
+.productVisual { position: relative; width: 100%; aspect-ratio: 1.08; display: flex; align-items: center; justify-content: center; overflow: hidden; border: 0; cursor: pointer; color: #fff; background: #b7cfca; }
+.productVisual::after, .modalVisual::after { content: ""; position: absolute; inset: 0; background: linear-gradient(180deg, rgba(28, 41, 39, 0.12), transparent 35%, rgba(28, 41, 39, 0.22)); pointer-events: none; }
+.productVisual img, .modalVisual img { width: 100%; height: 100%; object-fit: cover; transition: transform 0.45s ease; }
+.productVisual:hover img, .productVisual:focus-visible img { transform: scale(1.05); }
 .visualCategory { position: absolute; left: 17px; top: 15px; z-index: 1; font-size: 0.62rem; font-weight: 800; letter-spacing: 0.13em; text-transform: uppercase; }
 .viewDetails { position: absolute; right: 16px; bottom: 15px; z-index: 1; opacity: 0; font-size: 0.68rem; font-weight: 700; transition: opacity 0.2s ease; }
 .productVisual:hover .viewDetails, .productVisual:focus-visible .viewDetails { opacity: 1; }
@@ -114,6 +110,8 @@
 .stock { display: inline-flex; align-items: center; gap: 6px; color: #4b8064; font-size: 0.68rem; font-weight: 700; }
 .stock > span { width: 6px; height: 6px; border-radius: 50%; background: currentColor; }
 .outOfStock { color: #a86856; }
+.productLink { display: inline-flex; gap: 7px; margin-top: 14px; color: var(--ink); font-size: 0.7rem; font-weight: 700; }
+.productLink:hover { color: #b36e4d; }
 
 .voiceBanner { width: min(1180px, calc(100% - 64px)); min-height: 280px; margin: 0 auto 100px; display: flex; align-items: center; gap: 48px; padding: 48px 58px; background: var(--ink); color: var(--cream); }
 .voiceIcon { display: grid; place-items: center; width: 92px; height: 92px; flex-shrink: 0; border: 1px solid rgba(245, 242, 235, 0.3); border-radius: 50%; color: #e5b89b; font-size: 1.2rem; letter-spacing: 0.13em; }
@@ -128,7 +126,7 @@
 
 .modalBackdrop { position: fixed; inset: 0; z-index: 10; display: grid; place-items: center; padding: 20px; background: rgba(28, 41, 39, 0.58); }
 .modal { position: relative; width: min(700px, 100%); display: grid; grid-template-columns: 0.85fr 1.15fr; overflow: hidden; background: var(--cream); color: var(--ink); box-shadow: 0 25px 80px rgba(0, 0, 0, 0.25); }
-.modalVisual { display: grid; place-items: center; min-height: 340px; }
+.modalVisual { position: relative; display: grid; place-items: center; min-height: 340px; overflow: hidden; background: #b7cfca; }
 .modalContent { padding: 48px 40px; }
 .modalContent h2 { font-size: 2.2rem; line-height: 1; letter-spacing: -0.06em; }
 .modalContent > p:not(.kicker):not(.delivery) { margin: 18px 0 25px; color: var(--muted); font-size: 0.9rem; line-height: 1.6; }

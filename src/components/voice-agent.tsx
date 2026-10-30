@@ -24,7 +24,11 @@ function getSessionId(): string {
   return sessionId;
 }
 
-export default function VoiceAgent() {
+type VoiceAgentProps = {
+  compact?: boolean;
+};
+
+export default function VoiceAgent({ compact = false }: VoiceAgentProps) {
   const sessionId = useRef<string | null>(null);
   const [selectedFile, setSelectedFile] = useState<File | null>(null);
   const [messages, setMessages] = useState<Message[]>([]);
@@ -144,8 +148,8 @@ export default function VoiceAgent() {
   };
 
   return (
-    <main className={styles.page}>
-      <section className={styles.shell} aria-labelledby="page-title">
+    <main className={`${styles.page} ${compact ? styles.compactPage : ""}`}>
+      <section className={`${styles.shell} ${compact ? styles.compactShell : ""}`} aria-labelledby="page-title">
         <header className={styles.header}>
           <div>
             <p className={styles.eyebrow}>Northstar Goods</p>

@@ -2,19 +2,13 @@
 
 import { useState } from "react";
 import Link from "next/link";
+import Image from "next/image";
 import type { Product } from "../../tools/types";
+import VoiceAgentWidget from "./voice-agent-widget";
 import styles from "./storefront.module.css";
 
 type StorefrontProps = {
   products: Product[];
-};
-
-const visualByCategory: Record<string, { icon: string; tone: string }> = {
-  Kitchen: { icon: "☕", tone: "terracotta" },
-  Travel: { icon: "✦", tone: "ocean" },
-  "Home Office": { icon: "◒", tone: "gold" },
-  Home: { icon: "⌁", tone: "sage" },
-  Stationery: { icon: "✎", tone: "plum" },
 };
 
 function formatPrice(product: Product) {
@@ -22,10 +16,6 @@ function formatPrice(product: Product) {
     style: "currency",
     currency: product.currency,
   }).format(product.price);
-}
-
-function getVisual(product: Product) {
-  return visualByCategory[product.category] ?? { icon: "✦", tone: "ocean" };
 }
 
 export default function Storefront({ products }: StorefrontProps) {
@@ -81,17 +71,16 @@ export default function Storefront({ products }: StorefrontProps) {
         </div>
         <div className={styles.productGrid}>
           {products.map((product) => {
-            const visual = getVisual(product);
             return (
               <article className={styles.productCard} key={product.id}>
                 <button
-                  className={`${styles.productVisual} ${styles[visual.tone]}`}
+                  className={styles.productVisual}
                   type="button"
                   onClick={() => setSelectedProduct(product)}
                   aria-label={`View details for ${product.name}`}
                 >
+                  <Image src={product.imageUrl} alt="" fill sizes="(max-width: 430px) 100vw, (max-width: 760px) 50vw, 33vw" />
                   <span className={styles.visualCategory}>{product.category}</span>
-                  <span className={styles.visualIcon} aria-hidden="true">{visual.icon}</span>
                   <span className={styles.viewDetails}>View details <span aria-hidden="true">↗</span></span>
                 </button>
                 <div className={styles.productInfo}>
@@ -103,6 +92,7 @@ export default function Storefront({ products }: StorefrontProps) {
                   <span className={`${styles.stock} ${product.stockStatus === "out_of_stock" ? styles.outOfStock : ""}`}>
                     <span aria-hidden="true" /> {product.stockStatus === "in_stock" ? "In stock" : "Currently unavailable"}
                   </span>
+                  <Link className={styles.productLink} href={`/products/${product.id}`}>See full details <span aria-hidden="true">→</span></Link>
                 </div>
               </article>
             );
@@ -131,6 +121,8 @@ export default function Storefront({ products }: StorefrontProps) {
         <span>© Northstar Goods</span>
       </footer>
 
+      <VoiceAgentWidget />
+
       {selectedProduct && (
         <div className={styles.modalBackdrop} role="presentation" onClick={() => setSelectedProduct(null)}>
           <section
@@ -141,8 +133,8 @@ export default function Storefront({ products }: StorefrontProps) {
             onClick={(event) => event.stopPropagation()}
           >
             <button className={styles.closeButton} type="button" onClick={() => setSelectedProduct(null)} aria-label="Close product details">×</button>
-            <div className={`${styles.modalVisual} ${styles[getVisual(selectedProduct).tone]}`}>
-              <span className={styles.visualIcon} aria-hidden="true">{getVisual(selectedProduct).icon}</span>
+            <div className={styles.modalVisual}>
+              <Image src={selectedProduct.imageUrl} alt="" fill sizes="(max-width: 600px) 100vw, 40vw" />
             </div>
             <div className={styles.modalContent}>
               <p className={styles.kicker}>{selectedProduct.category}</p>

@@ -118,3 +118,33 @@ before the next phase begins.
 - AI transcripts are complete, ordered, raw, and secret-redacted only where
   necessary.
 - The final process report honestly describes failures, fixes, and limitations.
+
+## Phase 5 — Storefront and voice-agent experience
+
+### Status
+
+Complete.
+
+### Tasks completed
+
+- Added a Northstar Goods storefront homepage using the existing six-product
+  catalog as the only product data source.
+- Added responsive product cards with real product photography, prices,
+  descriptions, and stock status.
+- Added a catalog-backed product details modal and dedicated
+  `/products/[productId]` detail pages.
+- Added a floating customer-facing voice-agent launcher and popup on the
+  storefront, reusing the existing voice component and `/api/voice` route.
+- Preserved the full-page `/voice` experience and all existing backend
+  confirmation and tool behavior.
+- Added remote image configuration and optimized image rendering.
+
+### Definition of Done
+
+- The storefront homepage renders all six products from the shared catalog.
+- Each valid product ID has a server-rendered detail page with image, price,
+  stock, delivery estimate, and a voice-agent link.
+- Unknown product IDs return the normal Next.js not-found response.
+- The floating voice popup opens, closes, supports Escape/backdrop dismissal,
+  and retains the existing audio interaction.
+- Lint, TypeScript checks, production build, and existing voice/tool tests pass.

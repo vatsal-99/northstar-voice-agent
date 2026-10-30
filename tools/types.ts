@@ -9,6 +9,7 @@ export type Product = {
   currency: string;
   stockStatus: StockStatus;
   deliveryEstimate: string;
+  imageUrl: string;
 };
 
 export type ListProductsArgs = {
