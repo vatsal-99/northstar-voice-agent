@@ -8,7 +8,7 @@ assistant replies, tool calls, and recorded file changes. Secrets may be
 replaced only with `[REDACTED]`. Do not replace an export with a summary.
 
 The repository includes
-[`2026-10-30-voice-agent-session.events.jsonl`](./2026-10-30-voice-agent-session.events.jsonl),
+[`2026-10-30-voice-agent-session.events.jsonl`](../ai-chats/2026-10-30-voice-agent-session.events.jsonl),
 a native Copilot session event export. It contains the chronological user,
 assistant, tool, permission, and file-change events from the implementation
 session. API-key values were replaced with `[REDACTED]`; the event structure

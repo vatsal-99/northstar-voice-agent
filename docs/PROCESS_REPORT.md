@@ -103,8 +103,8 @@ Manual changes were limited to the following files and reasons:
   created the 15-product catalog and deterministic inspect/order tools.
 - `tests/*.mts` and `tools/tool-tests.mts` — added focused validation,
   confirmation, order-store, error-path, and current-catalog coverage.
-- `README.md`, `PLAN.md`, `PHASE-1-COMPATIBILITY.md`, and
-  `PROCESS_REPORT.md` — documented architecture, verification results,
+- `README.md`, `docs/PLAN.md`, `docs/PHASE-1-COMPATIBILITY.md`, and
+  `docs/PROCESS_REPORT.md` — documented architecture, verification results,
   limitations, manual changes, and assessment traceability.
 - `samples/*.wav` — supplied local assessment recordings for product,
   confirmation, and unclear-audio scenarios.
@@ -178,7 +178,7 @@ rate limiting, retention controls, and observability.
 ## 7. Raw coding-assistant export
 
 The native Copilot session event export is stored in
-[`ai-chats/2026-10-30-voice-agent-session.events.jsonl`](./ai-chats/2026-10-30-voice-agent-session.events.jsonl).
+[`ai-chats/2026-10-30-voice-agent-session.events.jsonl`](../ai-chats/2026-10-30-voice-agent-session.events.jsonl).
 It contains 4,012 valid JSONL events, including user messages, assistant
 messages, tool requests and completions, permissions, and recorded file
 changes. API-key values in the source event log were replaced with

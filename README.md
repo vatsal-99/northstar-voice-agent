@@ -18,7 +18,8 @@ and process documentation.
 
 The final assessment demo video and raw AI session exports must be supplied
 from the coding-assistant environment used for the assessment. See
-[PROCESS_REPORT.md](./PROCESS_REPORT.md) and [ai-chats/README.md](./ai-chats/README.md).
+[docs/PROCESS_REPORT.md](./docs/PROCESS_REPORT.md) and
+[docs/AI-CHAT-EXPORTS.md](./docs/AI-CHAT-EXPORTS.md).
 
 ## Requirements
 
@@ -130,14 +131,15 @@ The tests cover catalog tools, shared in-memory order creation and tracking,
 unique order numbers, order confirmation, unsupported/empty audio, missing
 sessions, invalid arguments, out-of-stock products, and unknown tools.
 The live OpenAI audio/tool compatibility result is recorded in
-[PHASE-1-COMPATIBILITY.md](./PHASE-1-COMPATIBILITY.md).
+[docs/PHASE-1-COMPATIBILITY.md](./docs/PHASE-1-COMPATIBILITY.md).
 
 ## Project records
 
 - [AGENTS.md](./AGENTS.md): standing implementation rules
 - [CLAUDE.md](./CLAUDE.md): instruction-file entry point
-- [PLAN.md](./PLAN.md): approval-gated phases and Definitions of Done
-- [PROCESS_REPORT.md](./PROCESS_REPORT.md): process reflection and manual work
+- [docs/PLAN.md](./docs/PLAN.md): approval-gated phases and Definitions of Done
+- [docs/PROCESS_REPORT.md](./docs/PROCESS_REPORT.md): process reflection and
+  manual work
 - [ai-chats/](./ai-chats/): native raw coding-assistant exports
 
 Orders are intentionally stored in memory only. Newly created orders can be

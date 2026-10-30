@@ -107,7 +107,7 @@ before the next phase begins.
 - Test unclear/silent audio, unrelated requests, missing details, unknown
   orders, out-of-stock products, and confirmation rejection.
 - Save complete raw AI chat exports in `ai-chats/`.
-- Write `PROCESS_REPORT.md`, including manual changes and corrections.
+- Write `docs/PROCESS_REPORT.md`, including manual changes and corrections.
 - Record a 2–5 minute demonstration video.
 
 ### Definition of Done
