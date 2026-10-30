@@ -202,7 +202,9 @@ export function formatCustomerResponse(content: string | null): string {
   if (!trimmed) return "I’m sorry, I couldn’t generate a clear response. Please try again.";
 
   const plainText = unwrapStructuredResponse(trimmed);
-  const cleanedText = removeToolArgumentLines(plainText);
+  const cleanedText = removeToolArgumentLines(
+    removeLeadingStructuredObjects(plainText),
+  );
   if (!cleanedText) {
     return "I’m sorry, I couldn’t generate a clear response. Please try again.";
   }
@@ -216,6 +218,56 @@ export function formatCustomerResponse(content: string | null): string {
       ? "It is currently in stock."
       : "It is currently out of stock.";
   return `${productDetails.name} is a ${productDetails.category} product priced at $${productDetails.price.toFixed(2)}. ${productDetails.description} ${stockMessage} The estimated delivery time is ${productDetails.deliveryEstimate}.`;
+}
+
+function removeLeadingStructuredObjects(content: string): string {
+  let remaining = content.trim();
+
+  while (remaining.startsWith("{")) {
+    const end = findJsonObjectEnd(remaining);
+    if (end === -1) break;
+
+    try {
+      JSON.parse(remaining.slice(0, end + 1));
+    } catch {
+      break;
+    }
+
+    remaining = remaining.slice(end + 1).replace(/^\s*,?\s*/, "");
+  }
+
+  return remaining.trim();
+}
+
+function findJsonObjectEnd(content: string): number {
+  let depth = 0;
+  let quoted = false;
+  let escaped = false;
+
+  for (let index = 0; index < content.length; index += 1) {
+    const character = content[index];
+    if (quoted) {
+      if (escaped) {
+        escaped = false;
+      } else if (character === "\\") {
+        escaped = true;
+      } else if (character === '"') {
+        quoted = false;
+      }
+      continue;
+    }
+
+    if (character === '"') {
+      quoted = true;
+    } else if (character === "{") {
+      depth += 1;
+    } else if (character === "}") {
+      depth -= 1;
+      if (depth === 0) return index;
+    }
+  }
+
+  return -1;
 }
 
 function removeToolArgumentLines(content: string): string {

@@ -71,5 +71,11 @@ assert.equal(
   ),
   "I’m sorry, I couldn’t generate a clear response. Please try again.",
 );
+assert.equal(
+  formatCustomerResponse(
+    '{"id":"apple-macbook-air-13","name":"Apple MacBook Air 13-inch","category":"Laptops","price":999,"currency":"USD","stockStatus":"in_stock"},{"id":"apple-macbook-pro-14","name":"Apple MacBook Pro 14-inch","category":"Laptops","price":1599,"currency":"USD","stockStatus":"in_stock"} There are two Apple MacBook models available: the MacBook Air 13-inch for $999, and the MacBook Pro 14-inch for $1599. Both are currently in stock. Which one are you interested in?',
+  ),
+  "There are two Apple MacBook models available: the MacBook Air 13-inch for $999, and the MacBook Pro 14-inch for $1599. Both are currently in stock. Which one are you interested in?",
+);
 
 console.log("Phase 4 validation and error tests passed.");
