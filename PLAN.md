@@ -127,7 +127,7 @@ Complete.
 
 ### Tasks completed
 
-- Added a Northstar Goods storefront homepage using the existing six-product
+- Added a Northstar Goods storefront homepage using the existing 15-product
   catalog as the only product data source.
 - Added responsive product cards with real product photography, prices,
   descriptions, and stock status.
@@ -141,7 +141,7 @@ Complete.
 
 ### Definition of Done
 
-- The storefront homepage renders all six products from the shared catalog.
+- The storefront homepage renders all 15 products from the shared catalog.
 - Each valid product ID has a server-rendered detail page with image, price,
   stock, delivery estimate, and a voice-agent link.
 - Unknown product IDs return the normal Next.js not-found response.

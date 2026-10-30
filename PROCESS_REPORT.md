@@ -43,6 +43,25 @@ server-side confirmation before executing.
 
 ## 4. Problems found and corrections
 
+### Phase 8 — audio-transcript bug
+
+The first audio-output request succeeded at the API level but returned
+`message.content: null`; the assistant text was in
+`message.audio.transcript`. Treating the null content as a failed response
+caused a false 502. The interim fix read the official transcript field.
+A later live test proved that `modalities: ["text"]` is accepted for the same
+direct-audio request, so the final implementation requests text-only output
+and no longer needs the audio-transcript workaround.
+
+### Phase 9 — audio-replay bug
+
+Generated audio response data was retained in the in-memory conversation and
+replayed in a later request. That replay shape was not accepted reliably by
+the next Chat Completions call. Assistant history was therefore sanitized to
+the text/tool-call fields needed for conversation continuity. The final
+text-only response configuration also prevents generated audio data from
+being stored in the first place.
+
 - The initial compatibility test verified audio input but did not produce a
   tool call because the supplied sample did not request a product. A second
   request used the same audio shape with explicit tool choice and verified the
@@ -89,6 +108,54 @@ Manual changes were limited to the following files and reasons:
   limitations, manual changes, and assessment traceability.
 - `samples/*.wav` — supplied local assessment recordings for product,
   confirmation, and unclear-audio scenarios.
+
+The remaining manually authored project files and their purposes are:
+
+- `.env.example` — documented the server-only API-key setting.
+- `.gitignore` — excluded local environment secrets, build output, and
+  generated files.
+- `package.json` and `package-lock.json` — defined the approved Next.js,
+  React, TypeScript, OpenAI SDK, Font Awesome, and test tooling dependencies.
+- `eslint.config.mjs`, `next.config.ts`, `tsconfig.json`, and
+  `next-env.d.ts` — configured linting, Next.js image/runtime behavior, and
+  strict TypeScript compilation.
+- `src/app/layout.tsx`, `src/app/globals.css`, `src/app/page.tsx`, and
+  `src/app/page.module.css` — provided the storefront shell and global
+  styling.
+- `src/app/products/page.tsx`,
+  `src/app/products/[productId]/page.tsx`,
+  `src/app/orders/page.tsx`,
+  `src/app/orders/new/page.tsx`, and
+  `src/app/orders/success/page.tsx` — provided catalog, product-detail, and
+  order pages.
+- `src/app/api/orders/route.ts` — exposed shared in-memory orders to the
+  storefront.
+- `src/components/storefront.tsx`,
+  `src/components/storefront.module.css`,
+  `src/components/product-catalogue.tsx`,
+  `src/components/product-detail.tsx`,
+  `src/components/product-detail.module.css`, and
+  `src/components/orders-content.tsx` — rendered the Northstar storefront and
+  order flows.
+- `src/components/voice-agent.tsx`,
+  `src/components/voice-agent.module.css`,
+  `src/components/voice-agent-widget.tsx`, and
+  `src/components/voice-agent-widget.module.css` — implemented the voice
+  popup, recording/upload controls, drag/drop, and visual states.
+- `src/lib/audio-validation.ts` — enforced the MP3/WAV upload contract.
+- `src/lib/confirmation.ts` — enforced exact server-side order confirmation.
+- `tools/catalog.ts`, `tools/types.ts`, `tools/list-products.ts`,
+  `tools/get-product-details.ts`, `tools/get-order-status.ts`,
+  `tools/place-order.ts`, `tools/order-store.ts`, `tools/registry.ts`,
+  `tools/logger.ts`, `tools/definitions.json`, and `tools/catalog.json` —
+  defined the typed 15-product source of truth, tools, storage, schemas, and
+  structured logging.
+- `tests/order-store-tests.mts`, `tests/phase-2-tests.mts`,
+  `tests/phase-4-tests.mts`, and `tools/tool-tests.mts` — verified order
+  storage, confirmation, validation, out-of-scope handling, and catalog
+  behavior.
+- `public/avatars/woman.png` — supplied the Olivia profile image without
+  modifying AutoEnquiry.
 
 Inline autocomplete was provided by GitHub Copilot in VS Code. No external
 code-generation service was used.

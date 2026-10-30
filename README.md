@@ -61,6 +61,9 @@ full details** on any product for its dedicated product page. The floating
 opens the existing voice agent in a popup; the full-page voice experience is
 also available at <http://localhost:3000/voice>.
 
+The shared catalog contains 15 electronics products. Product cards, detail
+pages, stock status, prices, and order tools all read from that catalog.
+
 Choose an MP3/WAV file or use **Record**. Browsers that record WebM internally
 are converted client-side into a WAV file before upload, so the server still
 receives only the formats required by the assessment.
