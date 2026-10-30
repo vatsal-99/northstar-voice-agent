@@ -149,3 +149,8 @@ button performs the same stock validation, explicit confirmation, application
 order-number generation, and in-memory storage without opening the full-page
 voice experience. The floating voice-agent launcher is mounted in the root
 layout and is available on every page.
+
+Voice-created orders and manually placed orders use the same browser session
+identifier and shared order store, so a voice order appears on
+`/orders` immediately while the server process is running. The Orders page
+lists all stored orders, including seeded demonstration orders.

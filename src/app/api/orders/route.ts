@@ -1,6 +1,6 @@
 import { NextResponse } from "next/server";
 import { executeTool } from "@/lib/agent";
-import { listOrdersForSession } from "../../../../tools/order-store";
+import { listOrders } from "../../../../tools/order-store";
 
 type OrderRequest = {
   productId?: unknown;
@@ -8,9 +8,8 @@ type OrderRequest = {
   sessionId?: unknown;
 };
 
-export async function GET(request: Request) {
-  const sessionId = new URL(request.url).searchParams.get("sessionId") ?? "";
-  return NextResponse.json({ orders: listOrdersForSession(sessionId) });
+export async function GET() {
+  return NextResponse.json({ orders: listOrders() });
 }
 
 export async function POST(request: Request) {

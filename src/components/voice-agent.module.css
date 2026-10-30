@@ -10,6 +10,9 @@
 
 .compactPage {
   min-height: 0;
+  height: 100%;
+  display: flex;
+  flex: 1;
   padding: 0;
   background: transparent;
 }
@@ -30,6 +33,8 @@
 .compactShell {
   width: 100%;
   min-height: 0;
+  height: 100%;
+  flex: 1;
   border: 0;
   border-radius: 0;
   box-shadow: none;
@@ -41,13 +46,16 @@
 }
 
 .compactShell .conversation {
-  min-height: 220px;
-  max-height: 290px;
-  padding: 20px 24px;
+  flex: 1;
+  min-height: 0;
+  max-height: none;
+  padding: 16px 22px;
 }
 
 .compactShell .composer {
-  padding: 18px 24px 22px;
+  flex: 0 0 auto;
+  margin-bottom: 12px;
+  padding: 6px 18px 0;
 }
 
 .header {
@@ -116,25 +124,26 @@
   place-items: center;
   align-content: center;
   flex: 1;
-  min-height: 250px;
+  min-height: 190px;
   text-align: center;
 }
 
 .waveform {
-  margin-bottom: 18px;
+  margin-bottom: 12px;
   color: #b57b55;
-  font-size: 2rem;
+  font-size: 1.65rem;
   letter-spacing: 0.3em;
 }
 
 .emptyState h2 {
-  font-size: 1.2rem;
+  font-size: 1rem;
 }
 
 .emptyState p {
-  max-width: 360px;
-  margin-top: 8px;
+  max-width: 320px;
+  margin-top: 6px;
   color: #788487;
+  font-size: .85rem;
   line-height: 1.5;
 }
 
@@ -156,6 +165,27 @@
 
 .message p {
   white-space: pre-wrap;
+}
+
+.audioWave {
+  display: flex;
+  align-items: center;
+  gap: 2px;
+  height: 28px;
+  margin: 3px 0 8px;
+}
+
+.audioWave i {
+  display: block;
+  width: 3px;
+  border-radius: 999px;
+  background: currentColor;
+  opacity: .7;
+}
+
+.audioTranscript {
+  font-size: .78rem;
+  opacity: .82;
 }
 
 .customerMessage {
@@ -185,7 +215,8 @@
 }
 
 .composer {
-  padding: 24px 44px 30px;
+  position: relative;
+  padding: 6px 22px 12px;
   border-top: 1px solid rgba(35, 50, 56, 0.1);
 }
 
@@ -196,10 +227,149 @@
   gap: 12px;
 }
 
+.fileRow {
+  min-height: 52px;
+  padding: 5px 7px 5px 9px;
+  border: 1px solid rgba(35, 50, 56, .08);
+  border-radius: 22px;
+  background: #fffdf9;
+  box-shadow: 0 6px 20px rgba(35, 50, 56, .06);
+  transition: border-color .2s ease, box-shadow .2s ease, background .2s ease;
+}
+
+.fileRowDragActive {
+  border-color: #b86f4a;
+  background: #fff8f1;
+  box-shadow: 0 0 0 3px rgba(184, 111, 74, .14);
+}
+
+.srOnly {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border: 0;
+}
+
+.composerWave {
+  display: flex;
+  align-items: center;
+  gap: 2px;
+  height: 23px;
+  margin-left: auto;
+  color: #8eaca4;
+}
+
+.composerWave i {
+  display: block;
+  width: 2px;
+  border-radius: 999px;
+  background: currentColor;
+}
+
+.composerWaveActive i {
+  animation: recordingWave 0.8s ease-in-out infinite alternate;
+}
+
+.composerWaveActive i:nth-child(2n) { animation-delay: -0.15s; }
+.composerWaveActive i:nth-child(3n) { animation-delay: -0.3s; }
+.composerWaveActive i:nth-child(4n) { animation-delay: -0.45s; }
+
+@keyframes recordingWave {
+  from { transform: scaleY(.35); opacity: .55; }
+  to { transform: scaleY(1.15); opacity: 1; }
+}
+
+.recordPrompt {
+  flex: 1;
+  color: #9aa3a3;
+  font-size: .78rem;
+  white-space: nowrap;
+}
+
+.cancelButton {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  flex: 0 0 22px;
+  width: 22px;
+  height: 22px;
+  padding: 0;
+  border: 0;
+  border-radius: 50%;
+  background: transparent;
+  color: #7d8582;
+  cursor: pointer;
+}
+
+.cancelButton:hover,
+.cancelButton:focus-visible {
+  background: #eee7df;
+  color: #493d35;
+}
+
+.audioNameBadge {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  min-width: 0;
+  max-width: 42%;
+  overflow: hidden;
+  padding: 4px 5px 4px 9px;
+  border-radius: 999px;
+  background: #f1eee9;
+  color: #526267;
+  font-size: .64rem;
+  font-weight: 700;
+  white-space: nowrap;
+}
+
+.audioNameBadge > span {
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.recordingCancel {
+  flex: 0 0 17px;
+  width: 17px;
+  height: 17px;
+  min-height: 0;
+  color: #b14d43;
+}
+
+.audioNameBadge .recordingCancel {
+  background: transparent;
+  border: 0;
+}
+
+.audioNameBadge .recordingCancel svg {
+  width: 9px;
+  height: 9px;
+}
+
+.recordingCancel {
+  color: #b14d43;
+}
+
+.recordingCancel:hover,
+.recordingCancel:focus-visible {
+  background: #f7e1dc;
+  color: #8f3932;
+}
+
+.cancelButton svg {
+  width: 12px;
+  height: 12px;
+}
+
 .uploadButton,
 .recordButton,
 .sendButton {
-  min-height: 44px;
+  min-height: 0;
   border: 1px solid rgba(35, 50, 56, 0.16);
   border-radius: 12px;
   font: inherit;
@@ -210,15 +380,20 @@
 .uploadButton {
   display: inline-flex;
   align-items: center;
-  gap: 8px;
-  padding: 0 15px;
-  background: #233238;
-  color: #fff;
+  justify-content: center;
+  flex: 0 0 34px;
+  width: 34px;
+  height: 34px;
+  padding: 0;
+  border: 0;
+  border-radius: 50%;
+  background: #fffdf9;
+  color: #233238;
 }
 
-.uploadButton span {
-  font-size: 1.3rem;
-  font-weight: 400;
+.uploadButton svg {
+  width: 16px;
+  height: 16px;
 }
 
 .uploadButton input {
@@ -228,15 +403,31 @@
 .recordButton {
   display: inline-flex;
   align-items: center;
-  gap: 8px;
-  padding: 0 15px;
-  background: transparent;
-  color: #40545a;
+  justify-content: center;
+  flex: 0 0 34px;
+  width: 34px;
+  height: 34px;
+  padding: 0;
+  border: 0;
+  border-radius: 50%;
+  background: #1c4a43;
+  color: #fff;
+  flex-shrink: 0;
 }
 
 .recordButton.recording {
-  border-color: #b45c52;
-  color: #a04940;
+  background: #b45c52;
+}
+
+.recordButton .recordDot {
+  display: none;
+}
+
+.micIcon {
+  display: block;
+  width: 15px;
+  height: 15px;
+  color: #fff;
 }
 
 .recording .recordDot {
@@ -245,13 +436,16 @@
 }
 
 .selectedRow {
-  justify-content: space-between;
-  margin-top: 14px;
-  padding: 10px 0 0;
+  position: absolute;
+  max-width: calc(100% - 260px);
+  margin: 0;
+  padding: 0;
+  transform: translate(72px, -58px);
 }
 
 .fileName,
 .filePlaceholder {
+  flex: 1;
   min-width: 0;
   overflow: hidden;
   color: #526267;
@@ -267,17 +461,42 @@
 .sendButton {
   display: inline-flex;
   align-items: center;
-  gap: 10px;
+  justify-content: center;
+  flex: 0 0 34px;
+  width: 34px;
+  height: 34px;
   flex-shrink: 0;
-  padding: 0 17px;
-  background: #b57b55;
+  padding: 0;
+  border: 0;
+  border-radius: 50%;
+  background: #b86f4a;
   color: #fff;
 }
 
 .sendButton:disabled,
 .recordButton:disabled {
   cursor: not-allowed;
-  opacity: 0.45;
+}
+
+.sendButton:disabled {
+  background: #d3d5d2;
+  color: #737977;
+}
+
+.sendButton:not(:disabled):hover,
+.sendButton:not(:disabled):focus-visible {
+  background: #9f5939;
+}
+
+.sendButton svg {
+  width: 16px;
+  height: 16px;
+  color: #fff;
+  transform: translate(-1px, 1px);
+}
+
+.sendButton:disabled svg {
+  color: #737977;
 }
 
 .error,
@@ -291,9 +510,9 @@
 .notice { color: #86622e; }
 
 .privacyNote {
-  margin-top: 18px;
+  margin: 0 0 4px;
   color: #97a0a0;
-  font-size: 0.72rem;
+  font-size: 0.6rem;
   text-align: center;
 }
 
@@ -305,6 +524,6 @@
   .status { display: none; }
   .message { max-width: 90%; }
   .fileRow { flex-wrap: wrap; }
-  .selectedRow { align-items: flex-start; flex-direction: column; }
-  .sendButton { width: 100%; justify-content: center; }
+  .selectedRow { position: static; align-items: flex-start; flex-direction: column; max-width: none; margin-top: 10px; transform: none; }
+  .sendButton { width: 48px; }
 }

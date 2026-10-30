@@ -1,15 +1,18 @@
 "use client";
 
 import { useEffect, useRef, useState } from "react";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faMicrophone, faPaperPlane, faPlus, faStop, faXmark } from "@fortawesome/free-solid-svg-icons";
 import styles from "./voice-agent.module.css";
 
 type Message = {
   id: string;
   role: "customer" | "agent";
   text: string;
+  audio?: boolean;
 };
 
-const SESSION_STORAGE_KEY = "voice-agent-session-id";
+const SESSION_STORAGE_KEY = "northstar-session-id";
 const acceptedAudioTypes = ["audio/mpeg", "audio/mp3", "audio/wav", "audio/x-wav"];
 
 function audioBufferToWav(audioBuffer: AudioBuffer): Blob {
@@ -77,16 +80,35 @@ export default function VoiceAgent({ compact = false }: VoiceAgentProps) {
   const [messages, setMessages] = useState<Message[]>([]);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [isRecording, setIsRecording] = useState(false);
+  const [isDragActive, setIsDragActive] = useState(false);
   const [error, setError] = useState("");
   const [recordingNotice, setRecordingNotice] = useState("");
   const mediaRecorder = useRef<MediaRecorder | null>(null);
   const recordingChunks = useRef<Blob[]>([]);
+  const conversationRef = useRef<HTMLElement | null>(null);
+
+  useEffect(() => {
+    const conversation = conversationRef.current;
+    if (conversation) conversation.scrollTop = conversation.scrollHeight;
+  }, [messages, isSubmitting]);
 
   useEffect(() => {
     return () => {
       mediaRecorder.current?.stream.getTracks().forEach((track) => track.stop());
     };
   }, []);
+
+  const selectAudioFile = (file: File | null) => {
+    setError("");
+    setRecordingNotice("");
+    if (!file) return;
+    if (!acceptedAudioTypes.includes(file.type.toLowerCase())) {
+      setError("Please drop an MP3 or WAV file.");
+      setSelectedFile(null);
+      return;
+    }
+    setSelectedFile(file);
+  };
 
   const submitAudio = async () => {
     if (!selectedFile || isSubmitting) return;
@@ -102,6 +124,7 @@ export default function VoiceAgent({ compact = false }: VoiceAgentProps) {
         id: `${Date.now()}-customer`,
         role: "customer",
         text: `Audio submitted: ${selectedFile.name}`,
+        audio: true,
       },
     ]);
 
@@ -201,6 +224,21 @@ export default function VoiceAgent({ compact = false }: VoiceAgentProps) {
     setIsRecording(false);
   };
 
+  const cancelRecording = () => {
+    const recorder = mediaRecorder.current;
+    if (!recorder) return;
+
+    recorder.ondataavailable = null;
+    recorder.onstop = null;
+    if (recorder.state !== "inactive") recorder.stop();
+    recorder.stream.getTracks().forEach((track) => track.stop());
+    recordingChunks.current = [];
+    mediaRecorder.current = null;
+    setIsRecording(false);
+    setRecordingNotice("");
+    setError("");
+  };
+
   return (
     <main className={`${styles.page} ${compact ? styles.compactPage : ""}`}>
       <section className={`${styles.shell} ${compact ? styles.compactShell : ""}`} aria-labelledby="page-title">
@@ -218,7 +256,7 @@ export default function VoiceAgent({ compact = false }: VoiceAgentProps) {
           </span>
         </header>
 
-        <section className={styles.conversation} aria-live="polite" aria-label="Conversation">
+        <section ref={conversationRef} className={styles.conversation} aria-live="polite" aria-label="Conversation">
           {messages.length === 0 ? (
             <div className={styles.emptyState}>
               <span className={styles.waveform} aria-hidden="true">)))</span>
@@ -234,7 +272,16 @@ export default function VoiceAgent({ compact = false }: VoiceAgentProps) {
                 <span className={styles.messageLabel}>
                   {message.role === "customer" ? "You" : "Northstar"}
                 </span>
-                <p>{message.text}</p>
+                {message.audio && (
+                  <span className={styles.audioWave} aria-hidden="true">
+                    {Array.from({ length: 22 }, (_, index) => (
+                      <i key={index} style={{ height: `${10 + ((index * 17) % 18)}px` }} />
+                    ))}
+                  </span>
+                )}
+                <p className={message.audio ? styles.audioTranscript : undefined}>
+                  {message.audio ? `Voice message · ${message.text.replace("Audio submitted: ", "")}` : message.text}
+                </p>
               </article>
             ))
           )}
@@ -247,55 +294,98 @@ export default function VoiceAgent({ compact = false }: VoiceAgentProps) {
         </section>
 
         <section className={styles.composer} aria-label="Send an audio message">
-          <div className={styles.fileRow}>
-            <label className={styles.uploadButton}>
-              <span aria-hidden="true">+</span>
-              Choose MP3/WAV
+          <p className={styles.privacyNote}>Your audio is sent securely to the voice agent for this session.</p>
+          <div
+            className={`${styles.fileRow} ${isDragActive ? styles.fileRowDragActive : ""}`}
+            onDragOver={(event) => {
+              event.preventDefault();
+              event.dataTransfer.dropEffect = "copy";
+              setIsDragActive(true);
+            }}
+            onDragLeave={() => setIsDragActive(false)}
+            onDrop={(event) => {
+              event.preventDefault();
+              setIsDragActive(false);
+              selectAudioFile(event.dataTransfer.files?.[0] ?? null);
+            }}
+          >
+            <label className={styles.uploadButton} title="Upload MP3 or WAV">
+              <FontAwesomeIcon icon={faPlus} aria-hidden="true" />
+              <span className={styles.srOnly}>Upload MP3/WAV</span>
               <input
                 type="file"
                 accept=".mp3,.wav,audio/mpeg,audio/wav"
                 onChange={(event) => {
-                  const file = event.target.files?.[0] ?? null;
-                  setError("");
-                  setRecordingNotice("");
-                  if (file && !acceptedAudioTypes.includes(file.type.toLowerCase())) {
-                    setError("Please choose an MP3 or WAV file.");
-                    setSelectedFile(null);
-                    return;
-                  }
-                  setSelectedFile(file);
+                  selectAudioFile(event.target.files?.[0] ?? null);
                 }}
               />
             </label>
+            {selectedFile && !isRecording ? (
+              <span className={styles.audioNameBadge}>
+                <span>{selectedFile.name}</span>
+                <button
+                  className={`${styles.cancelButton} ${styles.recordingCancel}`}
+                  type="button"
+                  onClick={() => {
+                    setSelectedFile(null);
+                    setError("");
+                    setRecordingNotice("");
+                  }}
+                  aria-label="Remove selected recording"
+                  title="Remove selected recording"
+                >
+                  <FontAwesomeIcon icon={faXmark} aria-hidden="true" />
+                </button>
+              </span>
+            ) : (
+              <span className={styles.recordPrompt}>
+                {isRecording ? "Listening..." : "Tap to record"}
+              </span>
+            )}
+            {isRecording && (
+              <button
+                className={`${styles.cancelButton} ${styles.recordingCancel}`}
+                type="button"
+                onClick={cancelRecording}
+                aria-label="Cancel recording"
+                title="Cancel recording"
+              >
+                <FontAwesomeIcon icon={faXmark} aria-hidden="true" />
+              </button>
+            )}
+            <span className={`${styles.composerWave} ${isRecording ? styles.composerWaveActive : ""}`} aria-hidden="true">
+              {Array.from({ length: 28 }, (_, index) => (
+                <i key={index} style={{ height: `${8 + ((index * 13) % 18)}px` }} />
+              ))}
+            </span>
             <button
               className={`${styles.recordButton} ${isRecording ? styles.recording : ""}`}
               type="button"
               onClick={isRecording ? stopRecording : startRecording}
               disabled={isSubmitting}
+              aria-label={isRecording ? "Stop recording" : "Tap to record"}
+              title={isRecording ? "Stop recording" : "Tap to record"}
             >
-              <span className={styles.recordDot} />
-              {isRecording ? "Stop recording" : "Record"}
+              <FontAwesomeIcon
+                className={styles.micIcon}
+                icon={isRecording ? faStop : faMicrophone}
+                aria-hidden="true"
+              />
             </button>
-          </div>
-
-          <div className={styles.selectedRow}>
-            <span className={selectedFile ? styles.fileName : styles.filePlaceholder}>
-              {selectedFile ? selectedFile.name : "No audio selected"}
-            </span>
             <button
               className={styles.sendButton}
               type="button"
               onClick={submitAudio}
               disabled={!selectedFile || isSubmitting}
+              aria-label={isSubmitting ? "Sending audio" : "Send audio"}
+              title={isSubmitting ? "Sending audio" : "Send audio"}
             >
-              {isSubmitting ? "Sending..." : "Send audio"}
-              <span aria-hidden="true">→</span>
+              <FontAwesomeIcon icon={faPaperPlane} aria-hidden="true" />
             </button>
           </div>
 
           {error && <p className={styles.error} role="alert">{error}</p>}
           {recordingNotice && <p className={styles.notice} role="status">{recordingNotice}</p>}
-          <p className={styles.privacyNote}>Your audio is sent securely to the voice agent for this session.</p>
         </section>
       </section>
     </main>
