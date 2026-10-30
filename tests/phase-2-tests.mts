@@ -19,6 +19,13 @@ const pending = executeTool(
 );
 assert.equal(pending.ok, true);
 
+const rejected = executeTool(
+  sessionId,
+  "place_order",
+  JSON.stringify({ productId: "apple-airpods-pro", quantity: 2 }),
+);
+assert.equal(rejected.ok, false);
+
 const wrongConfirmation = executeTool(
   sessionId,
   "confirm_order",

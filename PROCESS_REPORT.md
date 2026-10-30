@@ -22,7 +22,9 @@ The work was deliberately split into four approval-gated phases:
 
 The highest-risk decision was tested before the full application was built.
 The verified request uses Chat Completions with `gpt-audio-1.5`,
-`input_audio`, `modalities: ["text", "audio"]`, and function tools.
+direct `input_audio`, `modalities: ["text"]`, and function tools. A follow-up
+live request confirmed that text-only output is accepted for direct audio, so
+the application does not request generated audio.
 
 ## 3. Important instructions
 
@@ -45,6 +47,9 @@ server-side confirmation before executing.
   tool call because the supplied sample did not request a product. A second
   request used the same audio shape with explicit tool choice and verified the
   real tool-call response shape.
+- A live follow-up compatibility request with `modalities: ["text"]` returned
+  a successful text response. The production request was changed to text-only
+  output and the audio-transcript fallback was removed.
 - Native Node type stripping did not resolve extensionless TypeScript imports
   for the focused scripts. The test script uses transient `tsx` execution
   without adding another application dependency.
@@ -57,15 +62,36 @@ server-side confirmation before executing.
 
 ## 5. Manual changes
 
-Manual changes were limited to:
+Manual changes were limited to the following files and reasons:
 
-- Creating and reviewing the project instruction and documentation files.
-- Selecting the verified OpenAI request shape after the live compatibility
-  test.
-- Implementing the catalog, tool loop, confirmation state, upload route, and
-  interface through the approved coding workflow.
-- Creating three local WAV samples with the Windows speech synthesizer and a
-  generated one-second silent WAV.
+- `AGENTS.md` — recorded project architecture, safety, testing, export, and
+  step-explanation rules.
+- `CLAUDE.md` — linked the standing rules and repeated the step-explanation
+  requirement at the entry point.
+- `src/lib/agent.ts` — implemented direct audio submission, the OpenAI tool
+  loop, backend confirmation enforcement, and the verified text-only response
+  shape.
+- `src/lib/confirmation.ts` — kept pending and confirmed order state
+  server-side so prompt instructions cannot bypass confirmation.
+- `src/lib/audio-validation.ts` and `src/app/api/voice/route.ts` — validated
+  uploaded MP3/WAV input and exposed the server voice endpoint.
+- `src/components/voice-agent.tsx`,
+  `src/components/voice-agent.module.css`,
+  `src/components/voice-agent-widget.tsx`, and
+  `src/components/voice-agent-widget.module.css` — implemented the upload,
+  recording, drag/drop, transcript display, and popup customer experience.
+- `tools/catalog.json`, `tools/*.ts`, and `tools/definitions.json` —
+  created the 15-product catalog and deterministic inspect/order tools.
+- `tests/*.mts` and `tools/tool-tests.mts` — added focused validation,
+  confirmation, order-store, error-path, and current-catalog coverage.
+- `README.md`, `PLAN.md`, `PHASE-1-COMPATIBILITY.md`, and
+  `PROCESS_REPORT.md` — documented architecture, verification results,
+  limitations, manual changes, and assessment traceability.
+- `samples/*.wav` — supplied local assessment recordings for product,
+  confirmation, and unclear-audio scenarios.
+
+Inline autocomplete was provided by GitHub Copilot in VS Code. No external
+code-generation service was used.
 
 No AutoEnquiry files were changed. No API key was written to source, samples,
 logs, or documentation.

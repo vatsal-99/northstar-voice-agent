@@ -13,7 +13,8 @@ The selected approach is:
 - API: Chat Completions
 - Model: `gpt-audio-1.5`
 - Input: `input_audio` content part with base64-encoded WAV bytes
-- Output modalities: `["text", "audio"]`
+- Input modality: direct audio
+- Output modality: text (`modalities: ["text"]`)
 - Tool mode: Chat Completions `tools` plus `tool_choice`
 
 ## Request shape
@@ -21,8 +22,7 @@ The selected approach is:
 ```ts
 const response = await client.chat.completions.create({
   model: "gpt-audio-1.5",
-  modalities: ["text", "audio"],
-  audio: { voice: "alloy", format: "wav" },
+  modalities: ["text"],
   messages: [
     {
       role: "user",
@@ -61,6 +61,11 @@ const response = await client.chat.completions.create({
 
 The final implementation should use automatic tool selection. The explicit
 `tool_choice` above was used only to prove the tool-call response shape.
+
+A follow-up live request on 2026-10-30 used the same direct audio input with
+`modalities: ["text"]` and no output-audio configuration. It succeeded with a
+text response, so the implementation uses text-only output and does not rely
+on `message.audio.transcript`.
 
 ## Observed response shape
 

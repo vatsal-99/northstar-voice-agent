@@ -1,4 +1,5 @@
 import assert from "node:assert/strict";
+import { readFileSync } from "node:fs";
 import { validateAudioUpload } from "../src/lib/audio-validation";
 import { executeTool, resetAgentSession } from "../src/lib/agent";
 
@@ -41,5 +42,15 @@ assert.equal(invalidArguments.ok, false);
 
 const unknownTool = executeTool(sessionId, "unknown_tool", "{}");
 assert.equal(unknownTool.ok, false);
+
+const prompt = readFileSync("prompts/system_prompt.md", "utf8");
+assert.match(prompt, /Help only with products, product information, orders, and order status/);
+assert.match(prompt, /Politely decline unrelated requests/);
+const outOfScopeTool = executeTool(
+  sessionId,
+  "weather_forecast",
+  JSON.stringify({ location: "London" }),
+);
+assert.equal(outOfScopeTool.ok, false);
 
 console.log("Phase 4 validation and error tests passed.");

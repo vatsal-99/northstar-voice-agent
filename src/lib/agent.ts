@@ -55,8 +55,7 @@ export async function runVoiceAgent(
   for (let round = 0; round < MAX_TOOL_ROUNDS; round += 1) {
     const completion = await client.chat.completions.create({
       model: MODEL,
-      modalities: ["text", "audio"],
-      audio: { voice: "alloy", format: "wav" },
+      modalities: ["text"],
       messages,
       tools,
       tool_choice: "auto",
@@ -71,11 +70,11 @@ export async function runVoiceAgent(
       role: "assistant",
       content: message.tool_calls?.length
         ? message.content
-        : message.content ?? message.audio?.transcript ?? null,
+        : message.content,
       ...(message.tool_calls ? { tool_calls: message.tool_calls } : {}),
     });
     if (!message.tool_calls?.length) {
-      const response = (message.content ?? message.audio?.transcript)?.trim();
+      const response = message.content?.trim();
       if (!response) {
         throw new Error("OpenAI returned no text response.");
       }
