@@ -21,6 +21,9 @@ from the coding-assistant environment used for the assessment. See
 [docs/PROCESS_REPORT.md](./docs/PROCESS_REPORT.md) and
 [docs/AI-CHAT-EXPORTS.md](./docs/AI-CHAT-EXPORTS.md).
 
+For evaluator setup and local execution instructions, see
+[docs/LOCAL-SETUP.md](./docs/LOCAL-SETUP.md).
+
 ## Requirements
 
 - Node.js 20.9 or newer
