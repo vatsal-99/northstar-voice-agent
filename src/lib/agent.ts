@@ -74,7 +74,7 @@ export async function runVoiceAgent(
       ...(message.tool_calls ? { tool_calls: message.tool_calls } : {}),
     });
     if (!message.tool_calls?.length) {
-      const response = message.content?.trim();
+      const response = formatCustomerResponse(message.content);
       if (!response) {
         throw new Error("OpenAI returned no text response.");
       }
@@ -179,6 +179,62 @@ function parseArguments(rawArguments: string): unknown {
     return JSON.parse(rawArguments);
   } catch {
     return {};
+  }
+}
+
+function formatCustomerResponse(content: string | null): string {
+  const trimmed = content?.trim();
+  if (!trimmed) return "";
+
+  const productDetails = parseProductDetails(trimmed);
+  if (!productDetails) return trimmed;
+
+  const stockMessage =
+    productDetails.stockStatus === "in_stock"
+      ? "It is currently in stock."
+      : "It is currently out of stock.";
+  return `${productDetails.name} is a ${productDetails.category} product priced at $${productDetails.price.toFixed(2)}. ${productDetails.description} ${stockMessage} The estimated delivery time is ${productDetails.deliveryEstimate}.`;
+}
+
+function parseProductDetails(content: string): {
+  name: string;
+  description: string;
+  price: number;
+  stockStatus: string;
+  deliveryEstimate: string;
+  category: string;
+} | null {
+  try {
+    const parsed: unknown = JSON.parse(content);
+    if (!isRecord(parsed)) return null;
+    const fields = {
+      name: parsed.productName,
+      description: parsed.productDescription,
+      price: parsed.productPrice,
+      stockStatus: parsed.productStockStatus,
+      deliveryEstimate: parsed.productDeliveryEstimate,
+      category: parsed.productCategory,
+    };
+    if (
+      typeof fields.name !== "string" ||
+      typeof fields.description !== "string" ||
+      typeof fields.price !== "number" ||
+      typeof fields.stockStatus !== "string" ||
+      typeof fields.deliveryEstimate !== "string" ||
+      typeof fields.category !== "string"
+    ) {
+      return null;
+    }
+    return {
+      name: fields.name,
+      description: fields.description,
+      price: fields.price,
+      stockStatus: fields.stockStatus,
+      deliveryEstimate: fields.deliveryEstimate,
+      category: fields.category,
+    };
+  } catch {
+    return null;
   }
 }
 

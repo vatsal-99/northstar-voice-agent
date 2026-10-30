@@ -53,4 +53,6 @@ const outOfScopeTool = executeTool(
 );
 assert.equal(outOfScopeTool.ok, false);
 
+assert.match(prompt, /Never return raw JSON/);
+
 console.log("Phase 4 validation and error tests passed.");
