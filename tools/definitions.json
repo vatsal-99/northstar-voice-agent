@@ -1,0 +1,82 @@
+[
+  {
+    "type": "function",
+    "function": {
+      "name": "list_products",
+      "description": "List store products, optionally filtered by keyword or category.",
+      "parameters": {
+        "type": "object",
+        "properties": {
+          "keyword": {
+            "type": "string",
+            "description": "A word or phrase to search for in product names, descriptions, or categories."
+          },
+          "category": {
+            "type": "string",
+            "description": "An exact product category such as Kitchen, Travel, Home, Home Office, or Stationery."
+          }
+        },
+        "additionalProperties": false
+      }
+    }
+  },
+  {
+    "type": "function",
+    "function": {
+      "name": "get_product_details",
+      "description": "Get the complete catalog details for one product.",
+      "parameters": {
+        "type": "object",
+        "properties": {
+          "productId": {
+            "type": "string",
+            "description": "The catalog product ID."
+          }
+        },
+        "required": ["productId"],
+        "additionalProperties": false
+      }
+    }
+  },
+  {
+    "type": "function",
+    "function": {
+      "name": "place_order",
+      "description": "Place an order for an in-stock product after the application has confirmed the product, quantity, and price with the customer.",
+      "parameters": {
+        "type": "object",
+        "properties": {
+          "productId": {
+            "type": "string",
+            "description": "The catalog product ID."
+          },
+          "quantity": {
+            "type": "integer",
+            "minimum": 1,
+            "description": "The number of units to order."
+          }
+        },
+        "required": ["productId", "quantity"],
+        "additionalProperties": false
+      }
+    }
+  },
+  {
+    "type": "function",
+    "function": {
+      "name": "get_order_status",
+      "description": "Look up the status of an existing order by its order number.",
+      "parameters": {
+        "type": "object",
+        "properties": {
+          "orderNumber": {
+            "type": "string",
+            "description": "The order number supplied by the customer."
+          }
+        },
+        "required": ["orderNumber"],
+        "additionalProperties": false
+      }
+    }
+  }
+]

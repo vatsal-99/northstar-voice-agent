@@ -1,0 +1,62 @@
+[
+  {
+    "id": "aurora-mug",
+    "name": "Aurora Ceramic Mug",
+    "description": "A 350 ml matte ceramic mug with a heat-resistant handle.",
+    "category": "Kitchen",
+    "price": 18.5,
+    "currency": "USD",
+    "stockStatus": "in_stock",
+    "deliveryEstimate": "3-5 business days"
+  },
+  {
+    "id": "trailhead-backpack",
+    "name": "Trailhead Day Backpack",
+    "description": "A lightweight 20-litre backpack with a padded laptop sleeve.",
+    "category": "Travel",
+    "price": 64,
+    "currency": "USD",
+    "stockStatus": "in_stock",
+    "deliveryEstimate": "4-6 business days"
+  },
+  {
+    "id": "lumen-desk-lamp",
+    "name": "Lumen Desk Lamp",
+    "description": "An adjustable LED desk lamp with three brightness settings.",
+    "category": "Home Office",
+    "price": 42,
+    "currency": "USD",
+    "stockStatus": "in_stock",
+    "deliveryEstimate": "3-5 business days"
+  },
+  {
+    "id": "cloud-knit-throw",
+    "name": "Cloud Knit Throw",
+    "description": "A soft machine-washable throw blanket for a sofa or reading chair.",
+    "category": "Home",
+    "price": 39.99,
+    "currency": "USD",
+    "stockStatus": "in_stock",
+    "deliveryEstimate": "5-7 business days"
+  },
+  {
+    "id": "summit-water-bottle",
+    "name": "Summit Insulated Bottle",
+    "description": "A 750 ml stainless-steel bottle that keeps drinks cold for 24 hours.",
+    "category": "Travel",
+    "price": 27.5,
+    "currency": "USD",
+    "stockStatus": "out_of_stock",
+    "deliveryEstimate": "Back in stock in approximately two weeks"
+  },
+  {
+    "id": "canvas-notebook",
+    "name": "Canvas Hardcover Notebook",
+    "description": "A lined A5 notebook with 160 acid-free pages and a fabric cover.",
+    "category": "Stationery",
+    "price": 14.25,
+    "currency": "USD",
+    "stockStatus": "in_stock",
+    "deliveryEstimate": "2-4 business days"
+  }
+]

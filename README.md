@@ -1,36 +1,66 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# Voice Customer Service Agent
 
-## Getting Started
+Assessment-focused voice customer service agent for a fictional online store.
+The application will accept customer audio, send it directly to an
+audio-capable OpenAI model, execute real OpenAI tool calls against local stub
+tools, and return a text response.
 
-First, run the development server:
+This project is intentionally separate from
+[AutoEnquiry](../AutoEnquiry/). AutoEnquiry is reference material only; its
+.NET backend, provider-key flow, and text-only orchestration are not used here.
+
+## Status
+
+Phase 1 compatibility verification and catalog/tool foundations are complete.
+The customer-facing route, prompt, tool loop, and confirmation state are
+deliberately deferred to later phases.
+
+## Requirements
+
+- Node.js 20.9 or newer
+- npm
+- An OpenAI API key with access to the model selected after compatibility
+  verification
+
+## Setup
+
+```bash
+npm install
+Copy-Item .env.example .env.local
+```
+
+Set `OPENAI_API_KEY` in `.env.local`. The key is server-only and must never be
+placed in client-side code, committed, logged, or included in AI chat exports.
+
+## Development
 
 ```bash
 npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+Open <http://localhost:3000>.
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+The current page is only the Phase 0 foundation placeholder. The phased
+implementation plan is in [PLAN.md](./PLAN.md).
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+## Verification gate
 
-## Learn More
+Before Phase 1, the selected OpenAI request shape must be verified to support
+both:
 
-To learn more about Next.js, take a look at the following resources:
+1. Direct audio input, without Whisper or any separate transcription step.
+2. Function/tool calling in the same model/API approach.
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+Official documentation currently distinguishes audio Chat Completions,
+Responses API tool orchestration, and Realtime/GPT-Live sessions. A live API
+request cannot be claimed until an assessment API key and a small sample audio
+file are available. The implementation will record the exact model, SDK
+request shape, and observed result before proceeding.
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+## Project records
 
-## Deploy on Vercel
-
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
-
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+- `AGENTS.md` contains standing development rules.
+- `CLAUDE.md` points tools that look for it to `AGENTS.md`.
+- `PHASE-1-COMPATIBILITY.md` records the verified audio and tool-call request.
+- `ai-chats/` is reserved for complete raw Copilot conversation exports.
+- `PLAN.md` contains the lean implementation phases and Definitions of Done.

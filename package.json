@@ -6,10 +6,12 @@
     "dev": "next dev",
     "build": "next build",
     "start": "next start",
-    "lint": "eslint"
+    "lint": "eslint",
+    "test:tools": "npx --yes tsx tools/tool-tests.mts"
   },
   "dependencies": {
     "next": "16.4.3",
+    "openai": "^7.45.1",
     "react": "19.3.0",
     "react-dom": "19.3.0"
   },
