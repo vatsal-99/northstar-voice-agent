@@ -148,3 +148,29 @@ Complete.
 - The floating voice popup opens, closes, supports Escape/backdrop dismissal,
   and retains the existing audio interaction.
 - Lint, TypeScript checks, production build, and existing voice/tool tests pass.
+
+## Phase 6 — Shopping navigation and order entry
+
+### Status
+
+Complete.
+
+### Tasks completed
+
+- Added Products, Orders, and Voice help navigation to the storefront and
+  product detail pages.
+- Replaced the product-detail voice CTA with a Buy now entry point.
+- Added a lightweight `/orders` order-request page with product context,
+  while intentionally keeping payments, checkout, and cart functionality out
+  of scope.
+- Kept voice assistance as an integrated project capability rather than the
+  primary storefront navigation or shopping action.
+
+### Definition of Done
+
+- Customers can navigate directly between Products and Orders.
+- In-stock product detail pages expose a Buy now action.
+- The selected product is carried into the order-request page.
+- Out-of-stock products cannot be started through Buy now.
+- Existing voice functionality, API behavior, and backend confirmation rules
+  remain intact.

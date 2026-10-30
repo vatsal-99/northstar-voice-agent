@@ -24,7 +24,11 @@ export default function ProductDetail({ product }: ProductDetailProps) {
           <span className={styles.brandMark}>N</span>
           <span>Northstar <em>Goods</em></span>
         </Link>
-        <Link className={styles.backLink} href="/#shop">← Back to collection</Link>
+        <div className={styles.navLinks}>
+          <Link href="/#shop">Products</Link>
+          <Link href="/orders">Orders</Link>
+          <Link href="/voice">Voice help</Link>
+        </div>
       </nav>
 
       <div className={styles.breadcrumbs}>
@@ -57,13 +61,17 @@ export default function ProductDetail({ product }: ProductDetailProps) {
             <div><span>Category</span><strong>{product.category}</strong></div>
           </div>
           <div className={styles.actions}>
-            <Link className={styles.voiceButton} href="/voice">
-              Ask our voice agent about this product <span aria-hidden="true">→</span>
-            </Link>
+            {isInStock ? (
+              <Link className={styles.buyButton} href={`/orders?productId=${product.id}`}>
+                Buy now <span aria-hidden="true">→</span>
+              </Link>
+            ) : (
+              <span className={styles.unavailableButton}>Currently unavailable</span>
+            )}
             <Link className={styles.continueLink} href="/#shop">Continue browsing</Link>
           </div>
           <p className={styles.note}>
-            We do not process payments online in this demo. Our voice agent can answer questions and help with order enquiries.
+            This assessment storefront does not process payments. Your order request will be reviewed before it is placed.
           </p>
         </div>
       </section>

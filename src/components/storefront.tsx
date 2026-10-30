@@ -29,11 +29,9 @@ export default function Storefront({ products }: StorefrontProps) {
           <span>Northstar <em>Goods</em></span>
         </Link>
         <div className={styles.navLinks}>
-          <a href="#shop">Shop</a>
-          <a href="#story">Our approach</a>
-          <a className={styles.navAgentLink} href="/voice">
-            <span aria-hidden="true">◉</span> Talk to our voice agent
-          </a>
+          <a href="#shop">Products</a>
+          <a href="/orders">Orders</a>
+          <a className={styles.navAgentLink} href="/voice"><span aria-hidden="true">◉</span> Voice help</a>
         </div>
       </nav>
 
