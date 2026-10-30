@@ -1,5 +1,6 @@
-import VoiceAgent from "@/components/voice-agent";
+import Storefront from "@/components/storefront";
+import { catalog } from "../../tools/catalog";
 
 export default function Home() {
-  return <VoiceAgent />;
+  return <Storefront products={catalog} />;
 }

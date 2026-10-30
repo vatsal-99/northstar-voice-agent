@@ -13,8 +13,8 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "Northstar Goods Voice Agent",
-  description: "Voice customer service for Northstar Goods.",
+  title: "Northstar Goods | Everyday objects, thoughtfully chosen",
+  description: "Thoughtful everyday essentials from Northstar Goods, with voice customer service when you need it.",
 };
 
 export default function RootLayout({ children }: LayoutProps<"/">) {

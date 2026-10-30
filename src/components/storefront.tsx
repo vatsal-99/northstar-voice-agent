@@ -1,0 +1,165 @@
+"use client";
+
+import { useState } from "react";
+import Link from "next/link";
+import type { Product } from "../../tools/types";
+import styles from "./storefront.module.css";
+
+type StorefrontProps = {
+  products: Product[];
+};
+
+const visualByCategory: Record<string, { icon: string; tone: string }> = {
+  Kitchen: { icon: "☕", tone: "terracotta" },
+  Travel: { icon: "✦", tone: "ocean" },
+  "Home Office": { icon: "◒", tone: "gold" },
+  Home: { icon: "⌁", tone: "sage" },
+  Stationery: { icon: "✎", tone: "plum" },
+};
+
+function formatPrice(product: Product) {
+  return new Intl.NumberFormat("en-US", {
+    style: "currency",
+    currency: product.currency,
+  }).format(product.price);
+}
+
+function getVisual(product: Product) {
+  return visualByCategory[product.category] ?? { icon: "✦", tone: "ocean" };
+}
+
+export default function Storefront({ products }: StorefrontProps) {
+  const [selectedProduct, setSelectedProduct] = useState<Product | null>(null);
+
+  return (
+    <main className={styles.page}>
+      <nav className={styles.nav} aria-label="Main navigation">
+        <Link className={styles.brand} href="/" aria-label="Northstar Goods home">
+          <span className={styles.brandMark}>N</span>
+          <span>Northstar <em>Goods</em></span>
+        </Link>
+        <div className={styles.navLinks}>
+          <a href="#shop">Shop</a>
+          <a href="#story">Our approach</a>
+          <a className={styles.navAgentLink} href="/voice">
+            <span aria-hidden="true">◉</span> Talk to our voice agent
+          </a>
+        </div>
+      </nav>
+
+      <section className={styles.hero} aria-labelledby="hero-title">
+        <div className={styles.heroCopy}>
+          <p className={styles.kicker}>Thoughtful things, for every day</p>
+          <h1 id="hero-title">Make space for the <span>good stuff.</span></h1>
+          <p className={styles.heroDescription}>
+            Well-made essentials for slow mornings, focused afternoons, and
+            everywhere in between.
+          </p>
+          <a className={styles.primaryButton} href="#shop">
+            Explore the collection <span aria-hidden="true">↓</span>
+          </a>
+        </div>
+        <div className={styles.heroArt} aria-label="A curated selection of Northstar Goods products" role="img">
+          <div className={`${styles.artOrb} ${styles.orbOne}`} />
+          <div className={`${styles.artOrb} ${styles.orbTwo}`} />
+          <div className={styles.artCard}>
+            <span className={styles.artSpark}>✦</span>
+            <span className={styles.artLabel}>NORTHSTAR<br /><strong>GOODS</strong></span>
+            <span className={styles.artLine} />
+            <span className={styles.artCaption}>EVERYDAY<br />OBJECTS</span>
+          </div>
+        </div>
+      </section>
+
+      <section className={styles.collection} id="shop" aria-labelledby="collection-title">
+        <div className={styles.sectionHeading}>
+          <div>
+            <p className={styles.kicker}>The collection</p>
+            <h2 id="collection-title">Small upgrades, <em>big difference.</em></h2>
+          </div>
+          <p className={styles.sectionNote}>Six considered essentials<br />for your daily rhythm.</p>
+        </div>
+        <div className={styles.productGrid}>
+          {products.map((product) => {
+            const visual = getVisual(product);
+            return (
+              <article className={styles.productCard} key={product.id}>
+                <button
+                  className={`${styles.productVisual} ${styles[visual.tone]}`}
+                  type="button"
+                  onClick={() => setSelectedProduct(product)}
+                  aria-label={`View details for ${product.name}`}
+                >
+                  <span className={styles.visualCategory}>{product.category}</span>
+                  <span className={styles.visualIcon} aria-hidden="true">{visual.icon}</span>
+                  <span className={styles.viewDetails}>View details <span aria-hidden="true">↗</span></span>
+                </button>
+                <div className={styles.productInfo}>
+                  <div className={styles.productTitleRow}>
+                    <h3>{product.name}</h3>
+                    <span className={styles.price}>{formatPrice(product)}</span>
+                  </div>
+                  <p>{product.description}</p>
+                  <span className={`${styles.stock} ${product.stockStatus === "out_of_stock" ? styles.outOfStock : ""}`}>
+                    <span aria-hidden="true" /> {product.stockStatus === "in_stock" ? "In stock" : "Currently unavailable"}
+                  </span>
+                </div>
+              </article>
+            );
+          })}
+        </div>
+      </section>
+
+      <section className={styles.voiceBanner} id="story" aria-labelledby="voice-title">
+        <div className={styles.voiceIcon} aria-hidden="true">)))</div>
+        <div className={styles.voiceCopy}>
+          <p className={styles.kicker}>Need a little help?</p>
+          <h2 id="voice-title">Ask a human.<br /><em>Or something close.</em></h2>
+          <p>Our voice agent can answer product questions, check availability, and help with your order.</p>
+        </div>
+        <a className={styles.lightButton} href="/voice">
+          Talk to our voice agent <span aria-hidden="true">→</span>
+        </a>
+      </section>
+
+      <footer className={styles.footer}>
+        <Link className={styles.brand} href="/" aria-label="Northstar Goods home">
+          <span className={styles.brandMark}>N</span>
+          <span>Northstar <em>Goods</em></span>
+        </Link>
+        <p>Made for the everyday.</p>
+        <span>© Northstar Goods</span>
+      </footer>
+
+      {selectedProduct && (
+        <div className={styles.modalBackdrop} role="presentation" onClick={() => setSelectedProduct(null)}>
+          <section
+            className={styles.modal}
+            role="dialog"
+            aria-modal="true"
+            aria-labelledby="product-dialog-title"
+            onClick={(event) => event.stopPropagation()}
+          >
+            <button className={styles.closeButton} type="button" onClick={() => setSelectedProduct(null)} aria-label="Close product details">×</button>
+            <div className={`${styles.modalVisual} ${styles[getVisual(selectedProduct).tone]}`}>
+              <span className={styles.visualIcon} aria-hidden="true">{getVisual(selectedProduct).icon}</span>
+            </div>
+            <div className={styles.modalContent}>
+              <p className={styles.kicker}>{selectedProduct.category}</p>
+              <h2 id="product-dialog-title">{selectedProduct.name}</h2>
+              <p>{selectedProduct.description}</p>
+              <div className={styles.modalMeta}>
+                <strong>{formatPrice(selectedProduct)}</strong>
+                <span className={`${styles.stock} ${selectedProduct.stockStatus === "out_of_stock" ? styles.outOfStock : ""}`}>
+                  <span aria-hidden="true" /> {selectedProduct.stockStatus === "in_stock" ? "In stock" : "Currently unavailable"}
+                </span>
+              </div>
+              <p className={styles.delivery}>Estimated delivery: {selectedProduct.deliveryEstimate}</p>
+              <a className={styles.primaryButton} href="/voice">Ask about this product <span aria-hidden="true">→</span></a>
+            </div>
+          </section>
+        </div>
+      )}
+    </main>
+  );
+}
