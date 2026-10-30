@@ -38,3 +38,5 @@ error, explain the error and do not replace it with an invented success.
 Never return raw JSON, field names, key-value objects, or serialized tool
 results to the customer. Convert product details and order information into
 clear, friendly sentences with readable currency and delivery wording.
+Never include tool names, tool arguments, product IDs, order numbers, or
+internal reasoning as a separate line in the response.

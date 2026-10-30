@@ -182,18 +182,81 @@ function parseArguments(rawArguments: string): unknown {
   }
 }
 
-function formatCustomerResponse(content: string | null): string {
+export function formatCustomerResponse(content: string | null): string {
   const trimmed = content?.trim();
-  if (!trimmed) return "";
+  if (!trimmed) return "I’m sorry, I couldn’t generate a clear response. Please try again.";
 
-  const productDetails = parseProductDetails(trimmed);
-  if (!productDetails) return trimmed;
+  const plainText = unwrapStructuredResponse(trimmed);
+  const cleanedText = removeToolArgumentLines(plainText);
+  if (!cleanedText) {
+    return "I’m sorry, I couldn’t generate a clear response. Please try again.";
+  }
+  if (cleanedText !== trimmed) return cleanedText;
+
+  const productDetails = parseProductDetails(cleanedText);
+  if (!productDetails) return cleanedText;
 
   const stockMessage =
     productDetails.stockStatus === "in_stock"
       ? "It is currently in stock."
       : "It is currently out of stock.";
   return `${productDetails.name} is a ${productDetails.category} product priced at $${productDetails.price.toFixed(2)}. ${productDetails.description} ${stockMessage} The estimated delivery time is ${productDetails.deliveryEstimate}.`;
+}
+
+function removeToolArgumentLines(content: string): string {
+  const remainingLines = content
+    .split(/\r?\n/)
+    .filter((line) => {
+      const trimmedLine = line.trim();
+      if (!trimmedLine.startsWith("{") || !trimmedLine.endsWith("}")) {
+        return true;
+      }
+      try {
+        const parsed: unknown = JSON.parse(trimmedLine);
+        return !(
+          isRecord(parsed) &&
+          (typeof parsed.productId === "string" ||
+            typeof parsed.orderNumber === "string") &&
+          (typeof parsed.quantity === "number" ||
+            typeof parsed.productId === "string")
+        );
+      } catch {
+        return true;
+      }
+    })
+    .map((line) => line.trim())
+    .filter(Boolean);
+
+  const result = remainingLines.join(" ").trim();
+  return /^northstar(?: goods)?$/i.test(result) ? "" : result;
+}
+
+function unwrapStructuredResponse(content: string): string {
+  const withoutCodeFence = content
+    .replace(/^```(?:json|text)?\s*/i, "")
+    .replace(/\s*```$/i, "")
+    .trim();
+
+  try {
+    const parsed: unknown = JSON.parse(withoutCodeFence);
+    if (typeof parsed === "string") return parsed.trim();
+    if (isRecord(parsed)) {
+      for (const key of ["response", "message", "text", "answer"]) {
+        if (typeof parsed[key] === "string") return parsed[key].trim();
+      }
+    }
+  } catch {
+    const quotedObject = withoutCodeFence.match(/^\{\s*"([\s\S]*)"\s*\}$/);
+    if (quotedObject) {
+      try {
+        return JSON.parse(`"${quotedObject[1]}"`).trim();
+      } catch {
+        return quotedObject[1].trim();
+      }
+    }
+  }
+
+  return withoutCodeFence;
 }
 
 function parseProductDetails(content: string): {

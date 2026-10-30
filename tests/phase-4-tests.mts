@@ -1,7 +1,11 @@
 import assert from "node:assert/strict";
 import { readFileSync } from "node:fs";
 import { validateAudioUpload } from "../src/lib/audio-validation";
-import { executeTool, resetAgentSession } from "../src/lib/agent";
+import {
+  executeTool,
+  formatCustomerResponse,
+  resetAgentSession,
+} from "../src/lib/agent";
 
 const validFile = new File(["RIFF audio sample"], "sample.wav", {
   type: "audio/wav",
@@ -54,5 +58,18 @@ const outOfScopeTool = executeTool(
 assert.equal(outOfScopeTool.ok, false);
 
 assert.match(prompt, /Never return raw JSON/);
+const orderText =
+  "Your order for one Apple MacBook Air 13-inch has been successfully placed. The total price is $999, and the order number is 10485. The current status is processing, and the estimated delivery time is 3-5 business days. Thank you for your purchase!";
+assert.equal(formatCustomerResponse(`{"${orderText}"}`), orderText);
+assert.equal(
+  formatCustomerResponse(JSON.stringify({ response: orderText })),
+  orderText,
+);
+assert.equal(
+  formatCustomerResponse(
+    `Northstar\n{"productId": "apple-macbook-air-13", "quantity": 1}\n{"productId": "apple-macbook-air-13", "quantity": 1}`,
+  ),
+  "I’m sorry, I couldn’t generate a clear response. Please try again.",
+);
 
 console.log("Phase 4 validation and error tests passed.");
