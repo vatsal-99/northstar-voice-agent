@@ -77,5 +77,11 @@ assert.equal(
   ),
   "There are two Apple MacBook models available: the MacBook Air 13-inch for $999, and the MacBook Pro 14-inch for $1599. Both are currently in stock. Which one are you interested in?",
 );
+assert.equal(
+  formatCustomerResponse(
+    "<|aesthetics_6|><|is_landscape_image|><|has_watermark|> I found two Apple MacBook models in our catalog: the Apple MacBook Air 13-inch for $999, and the Apple MacBook Pro 14-inch for $1599. Both are currently in stock. Which one would you like to purchase, and how many units do you need?",
+  ),
+  "I found two Apple MacBook models in our catalog: the Apple MacBook Air 13-inch for $999, and the Apple MacBook Pro 14-inch for $1599. Both are currently in stock. Which one would you like to purchase, and how many units do you need?",
+);
 
 console.log("Phase 4 validation and error tests passed.");

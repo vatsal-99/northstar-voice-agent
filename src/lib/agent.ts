@@ -201,7 +201,8 @@ export function formatCustomerResponse(content: string | null): string {
   const trimmed = content?.trim();
   if (!trimmed) return "I’m sorry, I couldn’t generate a clear response. Please try again.";
 
-  const plainText = unwrapStructuredResponse(trimmed);
+  const withoutControlTokens = removeModelControlTokens(trimmed);
+  const plainText = unwrapStructuredResponse(withoutControlTokens);
   const cleanedText = removeToolArgumentLines(
     removeLeadingStructuredObjects(plainText),
   );
@@ -218,6 +219,10 @@ export function formatCustomerResponse(content: string | null): string {
       ? "It is currently in stock."
       : "It is currently out of stock.";
   return `${productDetails.name} is a ${productDetails.category} product priced at $${productDetails.price.toFixed(2)}. ${productDetails.description} ${stockMessage} The estimated delivery time is ${productDetails.deliveryEstimate}.`;
+}
+
+function removeModelControlTokens(content: string): string {
+  return content.replace(/<\|[^|]*\|>/g, "").replace(/\s{2,}/g, " ").trim();
 }
 
 function removeLeadingStructuredObjects(content: string): string {
