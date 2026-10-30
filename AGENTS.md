@@ -86,6 +86,7 @@ ai-chats/      complete raw coding-assistant exports
 
 ## Process and documentation
 
+- After each step, explain what you changed and why.
 - Save every complete Copilot conversation export in `ai-chats/` as the raw
   tool format, in chronological order. Include failed attempts.
 - Redact only secrets in exported records, replacing them with `[REDACTED]`.
