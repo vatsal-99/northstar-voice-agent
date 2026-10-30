@@ -84,4 +84,23 @@ assert.equal(
   "I found two Apple MacBook models in our catalog: the Apple MacBook Air 13-inch for $999, and the Apple MacBook Pro 14-inch for $1599. Both are currently in stock. Which one would you like to purchase, and how many units do you need?",
 );
 
+const artifactCases = [
+  "<s>### Assistant: Your order is processing.</s>",
+  "[INST]I found the product.[/INST]",
+  "<<SYS>> You have one order. <</SYS>>",
+  "<|begin_of_text|><|end_of_text|>Your order is ready.",
+];
+for (const artifactCase of artifactCases) {
+  assert.doesNotMatch(
+    formatCustomerResponse(artifactCase),
+    /<\||<\/?(?:s|bos|eos)>|<<\/?SYS>>|\[\/?(?:INST|SYSTEM|ASSISTANT|USER)\]|###\s*(?:assistant|system|user)/i,
+  );
+}
+assert.equal(
+  formatCustomerResponse(
+    "Your order for Apple MacBook Air 13-inch is processing. Order number 10485.",
+  ),
+  "Your order for Apple MacBook Air 13-inch is processing. Order number 10485.",
+);
+
 console.log("Phase 4 validation and error tests passed.");

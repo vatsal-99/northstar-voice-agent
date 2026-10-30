@@ -222,7 +222,14 @@ export function formatCustomerResponse(content: string | null): string {
 }
 
 function removeModelControlTokens(content: string): string {
-  return content.replace(/<\|[^|]*\|>/g, "").replace(/\s{2,}/g, " ").trim();
+  return content
+    .replace(/<\|[\s\S]*?\|>/g, "")
+    .replace(/<\/?(?:s|bos|eos)>/gi, "")
+    .replace(/<<\/?SYS>>/gi, "")
+    .replace(/\[\/?(?:INST|SYSTEM|ASSISTANT|USER)\]/gi, "")
+    .replace(/^\s*###\s*(?:assistant|system|user)\s*:?\s*/gim, "")
+    .replace(/\s{2,}/g, " ")
+    .trim();
 }
 
 function removeLeadingStructuredObjects(content: string): string {
