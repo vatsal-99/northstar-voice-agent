@@ -10,17 +10,17 @@ if (allProducts.ok) {
   assert.equal(JSON.stringify(allProducts.data).includes('"count":15'), true);
 }
 
-const mug = getProductDetails({ productId: "apple-airpods-pro" });
-assert.equal(mug.ok, true);
+const airPods = getProductDetails({ productId: "apple-airpods-pro" });
+assert.equal(airPods.ok, true);
 
 const order = placeOrder({ productId: "apple-airpods-pro", quantity: 2 });
 assert.equal(order.ok, true);
 if (order.ok) {
-  assert.equal(JSON.stringify(order.data).includes('"totalPrice":37'), true);
+  assert.equal(JSON.stringify(order.data).includes('"totalPrice":498'), true);
 }
 
 const unavailable = placeOrder({
-  productId: "apple-airpods-pro",
+  productId: "playstation-5-slim",
   quantity: 1,
 });
 assert.equal(unavailable.ok, false);
