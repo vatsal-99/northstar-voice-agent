@@ -1,0 +1,45 @@
+import assert from "node:assert/strict";
+import { validateAudioUpload } from "../src/lib/audio-validation";
+import { executeTool, resetAgentSession } from "../src/lib/agent";
+
+const validFile = new File(["RIFF audio sample"], "sample.wav", {
+  type: "audio/wav",
+});
+
+const missingFile = validateAudioUpload(null, "session");
+assert.equal(missingFile.ok, false);
+if (!missingFile.ok) assert.equal(missingFile.status, 400);
+
+const missingSession = validateAudioUpload(validFile, null);
+assert.equal(missingSession.ok, false);
+
+const unsupportedFile = new File(["audio"], "sample.webm", {
+  type: "audio/webm",
+});
+const unsupported = validateAudioUpload(unsupportedFile, "session");
+assert.equal(unsupported.ok, false);
+if (!unsupported.ok) assert.equal(unsupported.status, 415);
+
+const emptyFile = new File([], "empty.wav", { type: "audio/wav" });
+const empty = validateAudioUpload(emptyFile, "session");
+assert.equal(empty.ok, false);
+
+const valid = validateAudioUpload(validFile, "  session-1  ");
+assert.deepEqual(valid, { ok: true, format: "wav", sessionId: "session-1" });
+
+const sessionId = "phase-4-confirmation";
+resetAgentSession(sessionId);
+const outOfStock = executeTool(
+  sessionId,
+  "request_order_confirmation",
+  JSON.stringify({ productId: "summit-water-bottle", quantity: 1 }),
+);
+assert.equal(outOfStock.ok, false);
+
+const invalidArguments = executeTool(sessionId, "place_order", "{invalid");
+assert.equal(invalidArguments.ok, false);
+
+const unknownTool = executeTool(sessionId, "unknown_tool", "{}");
+assert.equal(unknownTool.ok, false);
+
+console.log("Phase 4 validation and error tests passed.");

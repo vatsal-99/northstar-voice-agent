@@ -105,52 +105,59 @@ export function executeTool(
   const args = parseArguments(rawArguments);
   let result: ToolResult;
 
-  switch (name) {
-    case "list_products":
-      result = listProducts(isRecord(args) ? args : {});
-      break;
-    case "get_product_details":
-      result = getProductDetails({
-        productId: requireString(args, "productId"),
-      });
-      break;
-    case "get_order_status":
-      result = getOrderStatus({
-        orderNumber: requireString(args, "orderNumber"),
-      });
-      break;
-    case "request_order_confirmation":
-      result = confirmations.request(
-        sessionId,
-        requireString(args, "productId"),
-        requireInteger(args, "quantity"),
-      );
-      break;
-    case "confirm_order":
-      result = confirmations.confirm(
-        sessionId,
-        requireString(args, "productId"),
-        requireInteger(args, "quantity"),
-        requireNumber(args, "totalPrice"),
-      );
-      break;
-    case "place_order": {
-      const placeOrderArgs = {
-        productId: requireString(args, "productId"),
-        quantity: requireInteger(args, "quantity"),
-      };
-      result = confirmations.canPlace(sessionId, placeOrderArgs)
-        ? placeOrder(placeOrderArgs)
-        : {
-            ok: false,
-            error:
-              "Order placement requires explicit confirmation of the exact product, quantity, and total price.",
-          };
-      if (result.ok) confirmations.clear(sessionId);
-      break;
+  try {
+    switch (name) {
+      case "list_products":
+        result = listProducts(isRecord(args) ? args : {});
+        break;
+      case "get_product_details":
+        result = getProductDetails({
+          productId: requireString(args, "productId"),
+        });
+        break;
+      case "get_order_status":
+        result = getOrderStatus({
+          orderNumber: requireString(args, "orderNumber"),
+        });
+        break;
+      case "request_order_confirmation":
+        result = confirmations.request(
+          sessionId,
+          requireString(args, "productId"),
+          requireInteger(args, "quantity"),
+        );
+        break;
+      case "confirm_order":
+        result = confirmations.confirm(
+          sessionId,
+          requireString(args, "productId"),
+          requireInteger(args, "quantity"),
+          requireNumber(args, "totalPrice"),
+        );
+        break;
+      case "place_order": {
+        const placeOrderArgs = {
+          productId: requireString(args, "productId"),
+          quantity: requireInteger(args, "quantity"),
+        };
+        result = confirmations.canPlace(sessionId, placeOrderArgs)
+          ? placeOrder(placeOrderArgs)
+          : {
+              ok: false,
+              error:
+                "Order placement requires explicit confirmation of the exact product, quantity, and total price.",
+            };
+        if (result.ok) confirmations.clear(sessionId);
+        break;
+      }
+      default:
+        result = { ok: false, error: `Unknown tool '${name}'.` };
     }
-    default:
-      result = { ok: false, error: `Unknown tool '${name}'.` };
+  } catch (error) {
+    result = {
+      ok: false,
+      error: error instanceof Error ? error.message : "Invalid tool arguments.",
+    };
   }
 
   logToolCall(name, args, result);

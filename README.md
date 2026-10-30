@@ -1,67 +1,128 @@
 # Voice Customer Service Agent
 
-Assessment-focused voice customer service agent for a fictional online store.
-The application will accept customer audio, send it directly to an
-audio-capable OpenAI model, execute real OpenAI tool calls against local stub
-tools, and return a text response.
+An assessment-focused voice customer service agent for Northstar Goods, a
+fictional online store. Customers upload or record audio, the server sends the
+audio directly to `gpt-audio-1.5`, and the model can call local catalog/order
+tools before returning a text response.
 
-This project is intentionally separate from
-[AutoEnquiry](../AutoEnquiry/). AutoEnquiry is reference material only; its
-.NET backend, provider-key flow, and text-only orchestration are not used here.
+This project is independent from [AutoEnquiry](../AutoEnquiry/). AutoEnquiry
+was not used as the backend and no files in it are modified.
 
-## Status
+## Current status
 
-Phase 3 is complete: a responsive customer-facing audio interface is connected
-to `/api/voice`, with upload/record controls, session handling, loading states,
-errors, and agent responses. The assessment sample recordings and final
-process documentation remain deferred to Phase 4.
+Phases 0–4 implementation work is complete. The repository contains the
+foundation, verified direct audio/function-calling integration, tools, backend
+confirmation enforcement, responsive interface, samples, tests, and process
+documentation.
+
+The final assessment demo video and raw AI session exports must be supplied
+from the coding-assistant environment used for the assessment. See
+[PROCESS_REPORT.md](./PROCESS_REPORT.md) and [ai-chats/README.md](./ai-chats/README.md).
 
 ## Requirements
 
 - Node.js 20.9 or newer
 - npm
-- An OpenAI API key with access to the model selected after compatibility
-  verification
+- An OpenAI API key with access to `gpt-audio-1.5`
 
 ## Setup
 
-```bash
+PowerShell:
+
+```powershell
 npm install
 Copy-Item .env.example .env.local
 ```
 
-Set `OPENAI_API_KEY` in `.env.local`. The key is server-only and must never be
-placed in client-side code, committed, logged, or included in AI chat exports.
+Set the key in `.env.local`:
 
-## Development
+```text
+OPENAI_API_KEY=your-assessment-key
+```
 
-```bash
+The key is read only by the server-side OpenAI SDK. Never put it in frontend
+code, browser storage, request fields, logs, samples, screenshots, commits, or
+AI chat exports.
+
+## Run
+
+```powershell
 npm run dev
 ```
 
 Open <http://localhost:3000>.
 
-The current page is only the Phase 0 foundation placeholder. The phased
-implementation plan is in [PLAN.md](./PLAN.md).
+Choose an MP3/WAV file or use **Record** when the browser supports MP3/WAV
+recording. Some browsers expose only WebM recording; the interface reports
+that limitation and asks for an MP3/WAV upload because the server intentionally
+accepts only the formats required by the assessment.
 
-## Verification gate
+Each browser session receives a session ID stored in `sessionStorage`. The
+server uses that ID to preserve the tool conversation and pending order
+confirmation. The terminal prints structured tool-call events.
 
-Before Phase 1, the selected OpenAI request shape must be verified to support
-both:
+## API
 
-1. Direct audio input, without Whisper or any separate transcription step.
-2. Function/tool calling in the same model/API approach.
+`POST /api/voice` accepts `multipart/form-data`:
 
-Official documentation currently distinguishes audio Chat Completions,
-Responses API tool orchestration, and Realtime/GPT-Live sessions. A live API
-request cannot be claimed until an assessment API key and a small sample audio
-file are available. The implementation will record the exact model, SDK
-request shape, and observed result before proceeding.
+- `audio`: non-empty MP3 or WAV file, maximum 10 MB
+- `sessionId`: non-empty session identifier
+
+The route returns:
+
+```json
+{
+  "response": "The agent's final text response.",
+  "sessionId": "session-id"
+}
+```
+
+Errors return JSON with an `error` field and an appropriate `400`, `415`, or
+`502` status.
+
+## Direct audio and tools
+
+The server sends the uploaded bytes as an `input_audio` content part directly
+to `gpt-audio-1.5` using the official OpenAI Node.js SDK. There is no
+transcription step. The same request includes the tool definitions, and the
+server executes returned function calls before continuing the model loop.
+
+The system prompt is in [prompts/system_prompt.md](./prompts/system_prompt.md).
+Tool schemas are in [tools/definitions.json](./tools/definitions.json).
+Catalog-backed implementations are in [tools/](./tools/).
+
+Before `place_order` can execute, the backend requires a matching pending
+product, quantity, and total price confirmation. Prompt instructions alone are
+not trusted for this safety rule.
+
+## Samples
+
+See [samples/expected-behavior.md](./samples/expected-behavior.md):
+
+- `samples/product-question.wav`
+- `samples/order-confirmation.wav`
+- `samples/unclear-audio.wav`
+
+## Verification commands
+
+```powershell
+npm run test:tools
+npm run test:phase-2
+npm run test:phase-4
+npm run lint
+npx tsc --noEmit
+npm run build
+```
+
+The tests cover catalog tools, order confirmation, unsupported/empty audio,
+missing sessions, invalid arguments, out-of-stock products, and unknown tools.
+The live OpenAI audio/tool compatibility result is recorded in
+[PHASE-1-COMPATIBILITY.md](./PHASE-1-COMPATIBILITY.md).
 
 ## Project records
 
-- `AGENTS.md` contains standing development rules.
-- `CLAUDE.md` points tools that look for it to `AGENTS.md`.
-- `PHASE-1-COMPATIBILITY.md` records the verified audio and tool-call request.
-- `ai-chats/` is reserved for complete raw Copilot conversation exports.
-- `PLAN.md` contains the lean implementation phases and Definitions of Done.
+- [AGENTS.md](./AGENTS.md): standing implementation rules
+- [CLAUDE.md](./CLAUDE.md): instruction-file entry point
+- [PLAN.md](./PLAN.md): approval-gated phases and Definitions of Done
+- [PROCESS_REPORT.md](./PROCESS_REPORT.md): process reflection and manual work
+- [ai-chats/](./ai-chats/): native raw coding-assistant exports
