@@ -38,8 +38,12 @@ export async function POST(request: Request) {
     return NextResponse.json(result);
   } catch (error) {
     console.error("Voice agent request failed", error);
+    const message =
+      error instanceof Error && error.message.trim()
+        ? error.message
+        : "The voice agent could not process this request.";
     return NextResponse.json(
-      { error: "The voice agent could not process this request." },
+      { error: `The voice agent could not process this request: ${message}` },
       { status: 502 },
     );
   }

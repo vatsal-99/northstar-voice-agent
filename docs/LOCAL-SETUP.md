@@ -77,6 +77,10 @@ The agent can answer product and order questions and can process an order only
 after the customer explicitly confirms the exact product, quantity, and total
 price.
 
+If a request fails, check the terminal running `npm run dev`. The server logs
+the detailed OpenAI or tool error, and the browser displays the actionable
+error message returned by the API.
+
 ## Run validation
 
 Run the focused tests:
@@ -104,4 +108,3 @@ npm run build
 - The project is independent from the `AutoEnquiry` project.
 - No payment processing, authentication, shipping integration, or production
   database is included.
-
