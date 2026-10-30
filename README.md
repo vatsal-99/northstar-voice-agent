@@ -11,9 +11,10 @@ This project is intentionally separate from
 
 ## Status
 
-Phase 2 is complete: direct audio orchestration, real OpenAI tool calls, and
-server-side order confirmation enforcement are implemented. The customer-facing
-frontend remains deferred to Phase 3.
+Phase 3 is complete: a responsive customer-facing audio interface is connected
+to `/api/voice`, with upload/record controls, session handling, loading states,
+errors, and agent responses. The assessment sample recordings and final
+process documentation remain deferred to Phase 4.
 
 ## Requirements
 
