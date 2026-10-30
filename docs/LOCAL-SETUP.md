@@ -103,6 +103,9 @@ npm run build
 ## Important limitations
 
 - The OpenAI API key is required for live voice-agent requests.
+- A request error such as `max_tokens is too large` is a per-request model
+  parameter error, not an indication that the day's usage is over. Restart the
+  development server after code changes and submit the audio again.
 - Orders are stored in process memory only. Restarting the server clears newly
   created orders.
 - The project is independent from the `AutoEnquiry` project.

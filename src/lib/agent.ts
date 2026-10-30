@@ -16,6 +16,7 @@ import { ConfirmationStore } from "./confirmation";
 
 const MODEL = "gpt-audio-1.5";
 const MAX_TOOL_ROUNDS = 8;
+const MAX_COMPLETION_TOKENS = 2048;
 const systemPrompt = readFileSync(
   path.join(process.cwd(), "prompts", "system_prompt.md"),
   "utf8",
@@ -38,9 +39,12 @@ export async function runVoiceAgent(
   sessionId: string,
   audio: AudioInput,
 ): Promise<AgentResult> {
-  const messages = conversations.get(sessionId) ?? [
-    { role: "system", content: systemPrompt },
-  ];
+  const storedMessages = conversations.get(sessionId);
+  const messages: ChatCompletionMessageParam[] = storedMessages
+    ? sanitizeConversation(storedMessages)
+    : [
+        { role: "system", content: systemPrompt },
+      ];
   messages.push({
     role: "user",
     content: [
@@ -56,6 +60,7 @@ export async function runVoiceAgent(
     const completion = await client.chat.completions.create({
       model: MODEL,
       modalities: ["text"],
+      max_tokens: MAX_COMPLETION_TOKENS,
       messages,
       tools,
       tool_choice: "auto",
@@ -78,7 +83,7 @@ export async function runVoiceAgent(
       if (!response) {
         throw new Error("OpenAI returned no text response.");
       }
-      conversations.set(sessionId, messages);
+      conversations.set(sessionId, sanitizeConversation(messages));
       return { response, sessionId };
     }
 
@@ -180,6 +185,16 @@ function parseArguments(rawArguments: string): unknown {
   } catch {
     return {};
   }
+}
+
+function sanitizeConversation(
+  messages: ChatCompletionMessageParam[],
+): ChatCompletionMessageParam[] {
+  return messages.map((message) =>
+    message.role === "user"
+      ? { role: "user", content: "[Previous customer audio]" }
+      : message,
+  );
 }
 
 export function formatCustomerResponse(content: string | null): string {
