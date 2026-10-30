@@ -27,7 +27,6 @@ export default function ProductDetail({ product }: ProductDetailProps) {
         <div className={styles.navLinks}>
           <Link href="/products">Products</Link>
           <Link href="/orders">Orders</Link>
-          <Link href="/voice">Voice help</Link>
         </div>
       </nav>
 
@@ -62,7 +61,7 @@ export default function ProductDetail({ product }: ProductDetailProps) {
           </div>
           <div className={styles.actions}>
             {isInStock ? (
-              <Link className={styles.buyButton} href={`/orders?productId=${product.id}`}>
+              <Link className={styles.buyButton} href={`/orders/new?productId=${product.id}`}>
                 Buy now <span aria-hidden="true">→</span>
               </Link>
             ) : (

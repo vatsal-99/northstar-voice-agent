@@ -7,20 +7,20 @@ import { placeOrder } from "./place-order";
 const allProducts = listProducts();
 assert.equal(allProducts.ok, true);
 if (allProducts.ok) {
-  assert.equal(JSON.stringify(allProducts.data).includes('"count":12'), true);
+  assert.equal(JSON.stringify(allProducts.data).includes('"count":15'), true);
 }
 
-const mug = getProductDetails({ productId: "aurora-mug" });
+const mug = getProductDetails({ productId: "apple-airpods-pro" });
 assert.equal(mug.ok, true);
 
-const order = placeOrder({ productId: "aurora-mug", quantity: 2 });
+const order = placeOrder({ productId: "apple-airpods-pro", quantity: 2 });
 assert.equal(order.ok, true);
 if (order.ok) {
   assert.equal(JSON.stringify(order.data).includes('"totalPrice":37'), true);
 }
 
 const unavailable = placeOrder({
-  productId: "summit-water-bottle",
+  productId: "apple-airpods-pro",
   quantity: 1,
 });
 assert.equal(unavailable.ok, false);

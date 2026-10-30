@@ -1,11 +1,13 @@
 "use client";
 
 import { useEffect, useState } from "react";
+import { usePathname } from "next/navigation";
 import VoiceAgent from "./voice-agent";
 import styles from "./voice-agent-widget.module.css";
 
 export default function VoiceAgentWidget() {
-  const [isOpen, setIsOpen] = useState(false);
+  const pathname = usePathname();
+  const [isOpen, setIsOpen] = useState(pathname === "/");
 
   useEffect(() => {
     if (!isOpen) return;

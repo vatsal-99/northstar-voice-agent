@@ -25,7 +25,6 @@ export default function ProductCatalogue({ products }: ProductCatalogueProps) {
         <div className={styles.navLinks}>
           <Link className={styles.navAgentLink} href="/products">Products</Link>
           <Link href="/orders">Orders</Link>
-          <Link className={styles.navAgentLink} href="/voice"><span aria-hidden="true">◉</span> Voice help</Link>
         </div>
       </nav>
 

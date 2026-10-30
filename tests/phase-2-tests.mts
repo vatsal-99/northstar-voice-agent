@@ -8,35 +8,35 @@ resetAgentSession(sessionId);
 const blocked = executeTool(
   sessionId,
   "place_order",
-  JSON.stringify({ productId: "aurora-mug", quantity: 1 }),
+  JSON.stringify({ productId: "apple-airpods-pro", quantity: 1 }),
 );
 assert.equal(blocked.ok, false);
 
 const pending = executeTool(
   sessionId,
   "request_order_confirmation",
-  JSON.stringify({ productId: "aurora-mug", quantity: 2 }),
+  JSON.stringify({ productId: "apple-airpods-pro", quantity: 2 }),
 );
 assert.equal(pending.ok, true);
 
 const wrongConfirmation = executeTool(
   sessionId,
   "confirm_order",
-  JSON.stringify({ productId: "aurora-mug", quantity: 2, totalPrice: 18.5 }),
+  JSON.stringify({ productId: "apple-airpods-pro", quantity: 2, totalPrice: 100 }),
 );
 assert.equal(wrongConfirmation.ok, false);
 
 const confirmation = executeTool(
   sessionId,
   "confirm_order",
-  JSON.stringify({ productId: "aurora-mug", quantity: 2, totalPrice: 37 }),
+  JSON.stringify({ productId: "apple-airpods-pro", quantity: 2, totalPrice: 498 }),
 );
 assert.equal(confirmation.ok, true);
 
 const placed = executeTool(
   sessionId,
   "place_order",
-  JSON.stringify({ productId: "aurora-mug", quantity: 2 }),
+  JSON.stringify({ productId: "apple-airpods-pro", quantity: 2 }),
 );
 assert.equal(placed.ok, true);
 
@@ -51,16 +51,16 @@ if (placed.ok) {
       totalPrice: number;
       status: string;
     };
-    assert.equal(stored.product, "Aurora Ceramic Mug");
+    assert.equal(stored.product, "Apple AirPods Pro");
     assert.equal(stored.quantity, 2);
-    assert.equal(stored.totalPrice, 37);
+    assert.equal(stored.totalPrice, 498);
     assert.equal(stored.status, "processing");
   }
 
   const cannotPlaceAgain = executeTool(
     sessionId,
     "place_order",
-    JSON.stringify({ productId: "aurora-mug", quantity: 2 }),
+    JSON.stringify({ productId: "apple-airpods-pro", quantity: 2 }),
   );
   assert.equal(cannotPlaceAgain.ok, false);
 }

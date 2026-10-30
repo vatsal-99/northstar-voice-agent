@@ -10,6 +10,12 @@ type StorefrontProps = {
   products: Product[];
 };
 
+const featuredProductIds = [
+  "apple-macbook-air-13",
+  "apple-macbook-pro-14",
+  "apple-airpods-pro",
+];
+
 function formatPrice(product: Product) {
   return new Intl.NumberFormat("en-US", {
     style: "currency",
@@ -30,7 +36,6 @@ export default function Storefront({ products }: StorefrontProps) {
         <div className={styles.navLinks}>
           <Link href="/products">Products</Link>
           <a href="/orders">Orders</a>
-          <a className={styles.navAgentLink} href="/voice"><span aria-hidden="true">◉</span> Voice help</a>
         </div>
       </nav>
 
@@ -64,10 +69,10 @@ export default function Storefront({ products }: StorefrontProps) {
             <p className={styles.kicker}>The collection</p>
             <h2 id="collection-title">Small upgrades, <em>big difference.</em></h2>
           </div>
-          <p className={styles.sectionNote}>Four featured essentials<br />from our full collection.</p>
+          <p className={styles.sectionNote}>Three customer favourites<br />from our full collection.</p>
         </div>
         <div className={styles.productGrid}>
-          {products.slice(0, 4).map((product) => {
+          {products.filter((product) => featuredProductIds.includes(product.id)).map((product) => {
             return (
               <article className={styles.productCard} key={product.id}>
                 <button
@@ -97,21 +102,9 @@ export default function Storefront({ products }: StorefrontProps) {
         </div>
         <div className={styles.collectionFooter}>
           <Link className={styles.primaryButton} href="/products">
-            View all {products.length} products <span aria-hidden="true">→</span>
+            View all products <span aria-hidden="true">→</span>
           </Link>
         </div>
-      </section>
-
-      <section className={styles.voiceBanner} id="story" aria-labelledby="voice-title">
-        <div className={styles.voiceIcon} aria-hidden="true">)))</div>
-        <div className={styles.voiceCopy}>
-          <p className={styles.kicker}>Need a little help?</p>
-          <h2 id="voice-title">Ask a human.<br /><em>Or something close.</em></h2>
-          <p>Our voice agent can answer product questions, check availability, and help with your order.</p>
-        </div>
-        <a className={styles.lightButton} href="/voice">
-          Talk to our voice agent <span aria-hidden="true">→</span>
-        </a>
       </section>
 
       <footer className={styles.footer}>
@@ -148,7 +141,7 @@ export default function Storefront({ products }: StorefrontProps) {
               </div>
               <p className={styles.delivery}>Estimated delivery: {selectedProduct.deliveryEstimate}</p>
               {selectedProduct.stockStatus === "in_stock" ? (
-                <a className={styles.primaryButton} href={`/orders?productId=${selectedProduct.id}`}>
+                <a className={styles.primaryButton} href={`/orders/new?productId=${selectedProduct.id}`}>
                   Buy now <span aria-hidden="true">→</span>
                 </a>
               ) : (

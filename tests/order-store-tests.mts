@@ -3,11 +3,11 @@ import { getOrderStatus } from "../tools/get-order-status";
 import { createOrder, getOrder } from "../tools/order-store";
 import { catalog } from "../tools/catalog";
 
-const mug = catalog.find((product) => product.id === "aurora-mug");
-assert.ok(mug);
+const headphones = catalog.find((product) => product.id === "apple-airpods-pro");
+assert.ok(headphones);
 
-const first = createOrder(mug, 1, "order-store-test");
-const second = createOrder(mug, 2, "order-store-test");
+const first = createOrder(headphones, 1, "order-store-test");
+const second = createOrder(headphones, 2, "order-store-test");
 assert.notEqual(first.orderNumber, second.orderNumber);
 assert.equal(getOrder(first.orderNumber), first);
 assert.equal(getOrder(second.orderNumber), second);

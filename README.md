@@ -53,9 +53,9 @@ npm run dev
 
 Open <http://localhost:3000>.
 
-The storefront homepage displays four featured products from
+The storefront homepage displays three featured premium products from
 [tools/catalog.json](./tools/catalog.json). Select **View all products** or
-the **Products** navigation link to browse all twelve products. Select **See
+the **Products** navigation link to browse the full catalogue. Select **See
 full details** on any product for its dedicated product page. The floating
 **Talk to us** button
 opens the existing voice agent in a popup; the full-page voice experience is
@@ -143,5 +143,9 @@ server clears those orders.
 
 The storefront's **Buy now** action opens the order flow and then the voice
 agent performs the required confirmation before calling `place_order`. It does
-not collect payment or create a live retail order. The floating voice-agent
-launcher is mounted in the root layout and is available on every page.
+not collect payment or create a live retail order. The Orders page also
+supports manual placement: choose a quantity and select **Place order**. That
+button performs the same stock validation, explicit confirmation, application
+order-number generation, and in-memory storage without opening the full-page
+voice experience. The floating voice-agent launcher is mounted in the root
+layout and is available on every page.

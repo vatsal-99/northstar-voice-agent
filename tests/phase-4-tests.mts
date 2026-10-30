@@ -32,7 +32,7 @@ resetAgentSession(sessionId);
 const outOfStock = executeTool(
   sessionId,
   "request_order_confirmation",
-  JSON.stringify({ productId: "summit-water-bottle", quantity: 1 }),
+  JSON.stringify({ productId: "playstation-5-slim", quantity: 1 }),
 );
 assert.equal(outOfStock.ok, false);
 
